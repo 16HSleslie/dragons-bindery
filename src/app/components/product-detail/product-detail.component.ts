@@ -129,13 +129,31 @@ export class ProductDetailComponent implements OnInit {
   }
   
 // Update the addToCart method
-addToCart(): void {
-  if (this.product) {
-    this.cartService.addToCart(this.product, this.quantity);
-    // Show feedback
-    alert(`Added ${this.quantity} x ${this.product.name} to your cart!`);
+  addToCart(): void {
+    if (this.product) {
+      this.cartService.addToCart(this.product, this.quantity);
+      
+      // Create a more elegant feedback mechanism instead of an alert
+      const feedbackElement = document.createElement('div');
+      feedbackElement.className = 'add-to-cart-feedback';
+      feedbackElement.innerText = `Added ${this.quantity} x ${this.product.name} to your cart!`;
+      
+      document.body.appendChild(feedbackElement);
+      
+      // Add animation class after a small delay to trigger animation
+      setTimeout(() => {
+        feedbackElement.classList.add('show');
+      }, 10);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        feedbackElement.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(feedbackElement);
+        }, 500);
+      }, 3000);
+    }
   }
-}
   
   // Helper for displaying stars in the template
   getStars(rating: number): number[] {

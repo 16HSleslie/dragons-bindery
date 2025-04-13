@@ -94,7 +94,7 @@
                       </h3>
                       <p class="product-description">{{ product.description }}</p>
                       <div class="product-price">${{ product.price.toFixed(2) }}</div>
-                      <button class="btn primary">
+                      <button class="btn primary" (click)="addToCart(product)">
                         <i class="material-icons">shopping_basket</i>
                         Add to Cart
                       </button>

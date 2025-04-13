@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProductService, Product } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
+import { CartService } from '../../services/cart.service';
+
 
 @Component({
   selector: 'app-shop',
@@ -20,7 +22,10 @@ export class ShopComponent implements OnInit {
   selectedCategory: string = 'all';
   sortOption: string = 'default';
   
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private cartService: CartService
+  ) {}
   
   ngOnInit(): void {
     this.loadProducts();
@@ -39,6 +44,32 @@ export class ShopComponent implements OnInit {
         this.errorMessage = 'Failed to load products. Please try again later.';
         this.loading = false;
         console.error('Error fetching products:', error);
+      }
+    });
+  }
+
+  addToCart(product: Product): void {
+    this.productService.getProduct(product._id).subscribe({
+      next: (fullProduct) => {
+        this.cartService.addToCart(fullProduct, 1);
+        
+        // Create feedback notification
+        const feedbackElement = document.createElement('div');
+        feedbackElement.className = 'add-to-cart-feedback';
+        feedbackElement.innerText = `Added ${fullProduct.name} to your cart!`;
+        
+        document.body.appendChild(feedbackElement);
+        
+        setTimeout(() => {
+          feedbackElement.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          feedbackElement.classList.remove('show');
+          setTimeout(() => {
+            document.body.removeChild(feedbackElement);
+          }, 500);
+        }, 3000);
       }
     });
   }
@@ -93,3 +124,4 @@ export class ShopComponent implements OnInit {
     }
   }
 }
+

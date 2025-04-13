@@ -1,14 +1,14 @@
 <!-- cart-dropdown.component.html -->
-<div class="cart-wrapper">
-    <div class="cart-icon" (click)="toggleCart()">
+<div class="cart-wrapper" (click)="$event.stopPropagation()">
+    <div class="cart-icon" (click)="toggleCart($event)">
       <i class="material-icons">shopping_basket</i>
-      <span class="cart-count">{{ cartItems.length }}</span>
+      <span class="cart-count" *ngIf="cartItems.length > 0">{{ cartItems.length }}</span>
     </div>
     
     <div class="cart-dropdown" [class.open]="isOpen">
       <div class="cart-header">
         <h3>Your Enchanted Cart</h3>
-        <button class="close-btn" (click)="toggleCart()">
+        <button class="close-btn" (click)="toggleCart($event)">
           <i class="material-icons">close</i>
         </button>
       </div>
@@ -17,7 +17,7 @@
         <div class="empty-cart" *ngIf="cartItems.length === 0">
           <div class="empty-cart-icon">🧙‍♂️</div>
           <p>Your magical cart is empty</p>
-          <button class="btn" routerLink="/shop" (click)="toggleCart()">Discover Enchanting Items</button>
+          <button class="btn" routerLink="/shop" (click)="toggleCart($event)">Discover Enchanting Items</button>
         </div>
         
         <div class="cart-items" *ngIf="cartItems.length > 0">
@@ -31,13 +31,13 @@
               <div class="item-price">${{ item.product.price.toFixed(2) }}</div>
               
               <div class="item-quantity">
-                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity - 1)">-</button>
+                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity - 1, $event)">-</button>
                 <span>{{ item.quantity }}</span>
-                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity + 1)">+</button>
+                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity + 1, $event)">+</button>
               </div>
             </div>
             
-            <button class="remove-btn" (click)="removeItem(item.product._id)">
+            <button class="remove-btn" (click)="removeItem(item.product._id, $event)">
               <i class="material-icons">delete</i>
             </button>
           </div>
@@ -51,9 +51,9 @@
         </div>
         
         <div class="cart-actions">
-          <button class="btn" routerLink="/cart" (click)="toggleCart()">View Cart</button>
-          <button class="btn primary" routerLink="/checkout" (click)="toggleCart()">Checkout</button>
+          <button class="btn" routerLink="/cart" (click)="toggleCart($event)">View Cart</button>
+          <button class="btn primary" routerLink="/checkout" (click)="toggleCart($event)">Checkout</button>
         </div>
       </div>
     </div>
-  </div>
+</div>

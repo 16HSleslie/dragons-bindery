@@ -70,29 +70,36 @@
           </div>
           
           <!-- Product Grid -->
-          <div class="product-grid" *ngIf="!loading && !errorMessage">
-            <div class="product-card" *ngFor="let product of filteredProducts; let i = index" [style.--card-index]="i + 1">
-              <div class="magic-corner top-left"></div>
-              <div class="magic-corner top-right"></div>
-              <div class="magic-corner bottom-left"></div>
-              <div class="magic-corner bottom-right"></div>
-              
-              <div class="product-image-container">
-                <img [src]="product.image" [alt]="product.name" class="product-image">
-                <div class="product-tag" *ngIf="product.isNew">New</div>
-                <div class="product-tag bestseller" *ngIf="product.isBestseller">Bestseller</div>
-                <div class="quick-shop">Quick Shop</div>
-              </div>
-              
-              <div class="product-info">
-                <h3 class="product-title">{{ product.name }}</h3>
-                <p class="product-description">{{ product.description }}</p>
-                <div class="product-price">${{ product.price.toFixed(2) }}</div>
-                <button class="btn primary">
-                  <i class="material-icons">shopping_basket</i>
-                  Add to Cart
-                </button>
-              </div>
+            <div class="product-grid" *ngIf="!loading && !errorMessage">
+                <div class="product-card" *ngFor="let product of filteredProducts; let i = index" [style.--card-index]="i + 1">
+                    <div class="magic-corner top-left"></div>
+                    <div class="magic-corner top-right"></div>
+                    <div class="magic-corner bottom-left"></div>
+                    <div class="magic-corner bottom-right"></div>
+                    
+                    <!-- Image container with router link on the image only -->
+                    <div class="product-image-container">
+                      <a [routerLink]="['/shop/product', product._id]">
+                        <img [src]="product.image" [alt]="product.name" class="product-image">
+                      </a>
+                      <div class="product-tag" *ngIf="product.isNew">New</div>
+                      <div class="product-tag bestseller" *ngIf="product.isBestseller">Bestseller</div>
+                      <div class="quick-shop">Quick Shop</div>
+                    </div>
+                    
+                    <!-- Product info section with all details -->
+                    <div class="product-info">
+                      <h3 class="product-title">
+                        <a [routerLink]="['/shop/product', product._id]">{{ product.name }}</a>
+                      </h3>
+                      <p class="product-description">{{ product.description }}</p>
+                      <div class="product-price">${{ product.price.toFixed(2) }}</div>
+                      <button class="btn primary">
+                        <i class="material-icons">shopping_basket</i>
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
             </div>
           </div>
           
@@ -104,6 +111,5 @@
             <button class="btn" (click)="filterByCategory('all')">View All Products</button>
           </div>
         </div>
-      </div>
     </div>
   </div>

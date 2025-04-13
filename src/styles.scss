@@ -293,3 +293,21 @@ a:hover {
     }
 }
 
+.product-image-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  display: block; /* Add this to make it work as a link */
+  color: inherit; /* To prevent link color */
+  text-decoration: none; /* Remove underline */
+}
+
+.product-title a {
+  color: var(--secondary-brown);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.product-title a:hover {
+  color: var(--primary-brown);
+}

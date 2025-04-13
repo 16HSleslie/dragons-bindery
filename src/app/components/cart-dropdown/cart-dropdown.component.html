@@ -1,0 +1,59 @@
+<!-- cart-dropdown.component.html -->
+<div class="cart-wrapper">
+    <div class="cart-icon" (click)="toggleCart()">
+      <i class="material-icons">shopping_basket</i>
+      <span class="cart-count">{{ cartItems.length }}</span>
+    </div>
+    
+    <div class="cart-dropdown" [class.open]="isOpen">
+      <div class="cart-header">
+        <h3>Your Enchanted Cart</h3>
+        <button class="close-btn" (click)="toggleCart()">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+      
+      <div class="cart-body">
+        <div class="empty-cart" *ngIf="cartItems.length === 0">
+          <div class="empty-cart-icon">🧙‍♂️</div>
+          <p>Your magical cart is empty</p>
+          <button class="btn" routerLink="/shop" (click)="toggleCart()">Discover Enchanting Items</button>
+        </div>
+        
+        <div class="cart-items" *ngIf="cartItems.length > 0">
+          <div class="cart-item" *ngFor="let item of cartItems">
+            <div class="item-image">
+              <img [src]="item.product.image" [alt]="item.product.name">
+            </div>
+            
+            <div class="item-details">
+              <h4>{{ item.product.name }}</h4>
+              <div class="item-price">${{ item.product.price.toFixed(2) }}</div>
+              
+              <div class="item-quantity">
+                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity - 1)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity + 1)">+</button>
+              </div>
+            </div>
+            
+            <button class="remove-btn" (click)="removeItem(item.product._id)">
+              <i class="material-icons">delete</i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cart-footer" *ngIf="cartItems.length > 0">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span>${{ cartTotal.toFixed(2) }}</span>
+        </div>
+        
+        <div class="cart-actions">
+          <button class="btn" routerLink="/cart" (click)="toggleCart()">View Cart</button>
+          <button class="btn primary" routerLink="/checkout" (click)="toggleCart()">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>

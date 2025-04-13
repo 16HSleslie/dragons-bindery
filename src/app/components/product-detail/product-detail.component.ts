@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService, Product } from '../../services/product.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -47,7 +48,8 @@ export class ProductDetailComponent implements OnInit {
   
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductService
+    private productService: ProductService,
+    private cartService: CartService
   ) {}
   
   ngOnInit(): void {
@@ -126,13 +128,14 @@ export class ProductDetailComponent implements OnInit {
     this.quantity++;
   }
   
-  addToCart(): void {
-    // This would connect to a cart service in a real app
-    if (this.product) {
-      console.log(`Added to cart: ${this.quantity} x ${this.product.name}`);
-      alert(`Added ${this.quantity} x ${this.product.name} to your cart!`);
-    }
+// Update the addToCart method
+addToCart(): void {
+  if (this.product) {
+    this.cartService.addToCart(this.product, this.quantity);
+    // Show feedback
+    alert(`Added ${this.quantity} x ${this.product.name} to your cart!`);
   }
+}
   
   // Helper for displaying stars in the template
   getStars(rating: number): number[] {

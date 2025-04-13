@@ -4,13 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { CartService } from './cart.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StripeService {
   private stripe: Stripe | null = null;
-  private apiUrl = 'http://localhost:5000/api/payment'; // Your backend API endpoint
+  private apiUrl = `${environment.apiUrl}/payment`; 
   
   constructor(
     private http: HttpClient,
@@ -22,7 +23,7 @@ export class StripeService {
   
   private async initializeStripe(): Promise<void> {
     // Replace with your actual Stripe publishable key
-    this.stripe = await loadStripe('pk_test_your_publishable_key_here');
+    this.stripe = await loadStripe(environment.stripePublishableKey);
   }
   
   getStripe(): Stripe | null {

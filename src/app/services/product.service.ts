@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, tap, map, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 
 export interface Product {
@@ -21,7 +22,7 @@ export interface Product {
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:5000/api/products';
+  private apiUrl = `${environment.apiUrl}/products`;
   
   // Fallback mock data
   private mockProducts: Product[] = [
@@ -132,21 +133,23 @@ export class ProductService {
       );
   }
 
-  updateProduct(id: string, product: Partial<Product>): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, product)
-      .pipe(
-        catchError(error => {
-          console.log('API error, using mock response:', error);
-          // Return the updated product as a mock response
-          const updatedProduct = this.mockProducts.find(p => p._id === id);
-          if (updatedProduct) {
-            Object.assign(updatedProduct, product);
-            return of(updatedProduct);
-          }
-          return of({} as Product);
-        })
-      );
-  }
+  
+updateProduct(id: string, product: Partial<Product>): Observable<Product> {
+  return this.http.put<Product>(`${this.apiUrl}/${id}`, product).pipe(
+    catchError(error => {
+      console.log('API error, using mock response:', error);
+      
+      // Mock implementation for development
+      const updatedProduct = {...this.mockProducts.find(p => p._id === id), ...product} as Product;
+      const index = this.mockProducts.findIndex(p => p._id === id);
+      if (index !== -1) {
+        this.mockProducts[index] = updatedProduct as Product;
+      }
+      
+      return of(updatedProduct);
+    })
+  );
+}
 
   deleteProduct(id: string): Observable<boolean> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`)
@@ -163,20 +166,19 @@ export class ProductService {
   }
 
   uploadProductImage(file: File): Observable<string> {
-    // In a real application, you would upload the file to your server
-    // This is a mock implementation for demonstration
     const formData = new FormData();
     formData.append('image', file);
     
-    // Real implementation would look like this:
-
-    return this.http.post<{imageUrl: string}>(`${this.apiUrl}/upload`, formData)
-      .pipe(
-        map(response => response.imageUrl),
-        catchError(error => {
-          console.error('Error uploading image:', error);
-          return throwError(() => new Error('Failed to upload image'));
-        })
-      );
+    // Try to use the real API
+    return this.http.post<{imageUrl: string}>(`${this.apiUrl}/upload`, formData).pipe(
+      map(response => response.imageUrl),
+      catchError(error => {
+        console.error('API error, using mock image URL:', error);
+        
+        // For development without a backend, return a mock URL
+        // In production, you would want to handle this differently
+        return of(`assets/images/placeholder.jpg?mock=${Date.now()}`);
+      })
+    );
   }
 }

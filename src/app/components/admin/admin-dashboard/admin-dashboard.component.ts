@@ -68,6 +68,7 @@ export class AdminDashboardComponent implements OnInit {
   
   handleSaveProduct(data: {product: Product, imageFile: File | null}): void {
     this.loading = true;
+    this.error = ''; // Clear any previous errors
     
     // If we have a new image file, upload it first
     if (data.imageFile) {
@@ -86,6 +87,8 @@ export class AdminDashboardComponent implements OnInit {
           console.error('Error uploading image:', error);
           this.loading = false;
           this.error = 'Failed to upload image. Please try again.';
+          // Show the error message to the user
+          alert('Failed to upload image: ' + (error.message || 'Unknown error'));
         }
       });
     } else {
@@ -116,6 +119,8 @@ export class AdminDashboardComponent implements OnInit {
         console.error('Error updating product:', error);
         this.loading = false;
         this.error = 'Failed to update product. Please try again.';
+        // Show the error message to the user
+        alert('Failed to update product: ' + (error.message || 'Unknown error'));
       }
     });
   }

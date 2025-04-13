@@ -11,6 +11,30 @@
 npm-debug.log
 yarn-error.log
 
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test.local
+.env.production
+.env.production.local
+
+# Uploaded files
+/backend/uploads/
+
+# Build output
+/dist/
+/build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
 # IDEs and editors
 .idea/
 .project
@@ -19,6 +43,8 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+*.swp
+*.swo
 
 # Visual Studio Code
 .vscode/*
@@ -40,3 +66,10 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# MongoDB
+WiredTiger*
+*.wt
+mongod.lock
+journal/
+diagnostic.data/

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-page-transition',
@@ -7,8 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PageTransitionComponent implements OnInit {
   
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  
   ngOnInit(): void {
-    this.setupPageTransition();
+    if (isPlatformBrowser(this.platformId)) {
+      this.setupPageTransition();
+    }
   }
   
   setupPageTransition(): void {

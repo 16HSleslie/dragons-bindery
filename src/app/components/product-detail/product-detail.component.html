@@ -1,1 +1,337 @@
-<p>product-detail works!</p>
+<div class="product-detail-page">
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <div class="loading-book">
+        <div class="book-page"></div>
+        <div class="book-page"></div>
+        <div class="book-page"></div>
+      </div>
+      <p>Summoning magical item...</p>
+    </div>
+    
+    <!-- Error Message -->
+    <div class="error-message" *ngIf="errorMessage">
+      <p>{{ errorMessage }}</p>
+      <button class="btn" routerLink="/shop">Return to Shop</button>
+    </div>
+    
+    <!-- Product Detail Content -->
+    <div class="container" *ngIf="!loading && !errorMessage && product">
+      <!-- Breadcrumbs -->
+      <div class="breadcrumbs">
+        <a routerLink="/">Home</a> / 
+        <a routerLink="/shop">Shop</a> / 
+        <a routerLink="/shop" [queryParams]="{category: product.category}">{{ product.category | titlecase }}</a> / 
+        <span>{{ product.name }}</span>
+      </div>
+      
+      <div class="product-main">
+        <!-- Product Gallery -->
+        <div class="product-gallery">
+          <div class="main-image">
+            <img [src]="productImages[activeImageIndex]" [alt]="product.name">
+            <div class="image-overlay"></div>
+          </div>
+          
+          <div class="image-thumbnails" *ngIf="productImages.length > 1">
+            <div 
+              *ngFor="let image of productImages; let i = index" 
+              class="thumbnail" 
+              [class.active]="i === activeImageIndex"
+              (click)="setActiveImage(i)">
+              <img [src]="image" [alt]="product.name + ' thumbnail'">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Product Info -->
+        <div class="product-info">
+          <div class="product-tags">
+            <div class="product-tag" *ngIf="product.isNew">New</div>
+            <div class="product-tag bestseller" *ngIf="product.isBestseller">Bestseller</div>
+          </div>
+          
+          <h1 class="product-title">{{ product.name }}</h1>
+          
+          <div class="product-ratings">
+            <div class="stars">
+              <i class="material-icons" *ngFor="let star of getStars(4)">star</i>
+              <i class="material-icons" *ngFor="let star of getEmptyStars(4)">star_border</i>
+            </div>
+            <span class="review-count">{{ reviews.length }} Reviews</span>
+          </div>
+          
+          <div class="product-price">${{ product.price.toFixed(2) }}</div>
+          
+          <div class="product-short-description">
+            <p>{{ product.description }}</p>
+          </div>
+          
+          <div class="product-attributes">
+            <div class="product-attribute">
+              <span class="attribute-label">Craftsmanship:</span>
+              <span class="attribute-value">Hand-bound</span>
+            </div>
+            <div class="product-attribute">
+              <span class="attribute-label">Materials:</span>
+              <span class="attribute-value">Genuine leather, artisanal paper</span>
+            </div>
+            <div class="product-attribute">
+              <span class="attribute-label">Dimensions:</span>
+              <span class="attribute-value">8.5" x 6" x 1.5"</span>
+            </div>
+          </div>
+          
+          <div class="product-actions">
+            <div class="quantity-control">
+              <button class="qty-btn" (click)="decreaseQuantity()">-</button>
+              <input type="number" [value]="quantity" readonly>
+              <button class="qty-btn" (click)="increaseQuantity()">+</button>
+            </div>
+            
+            <button class="btn primary add-to-cart-btn" (click)="addToCart()">
+              <i class="material-icons">shopping_basket</i>
+              Add to Enchanted Cart
+            </button>
+          </div>
+          
+          <div class="product-meta">
+            <div class="meta-item">
+              <i class="material-icons">local_shipping</i>
+              <span>Free Magical Delivery on orders over $100</span>
+            </div>
+            <div class="meta-item">
+              <i class="material-icons">eco</i>
+              <span>Sustainably crafted with ethically sourced materials</span>
+            </div>
+            <div class="meta-item">
+              <i class="material-icons">verified</i>
+              <span>Enchanted to last for generations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Product Tabs -->
+      <div class="product-tabs">
+        <div class="tab-headers">
+          <div 
+            class="tab-header" 
+            [class.active]="activeTab === 'description'"
+            (click)="setActiveTab('description')">
+            Description
+          </div>
+          <div 
+            class="tab-header" 
+            [class.active]="activeTab === 'specifications'"
+            (click)="setActiveTab('specifications')">
+            Specifications
+          </div>
+          <div 
+            class="tab-header" 
+            [class.active]="activeTab === 'reviews'"
+            (click)="setActiveTab('reviews')">
+            Reviews ({{ reviews.length }})
+          </div>
+        </div>
+        
+        <div class="tab-content" [class.active]="activeTab === 'description'">
+          <div class="rich-text">
+            <h3>The Art of Dragon Scale Binding</h3>
+            <p>
+              This exquisite journal features our signature dragon scale binding technique, a 
+              method passed down through generations of magical bookbinders. Each scale is 
+              carefully embossed by hand onto genuine leather, creating a tactile and visually 
+              stunning cover that catches the light as you move it.
+            </p>
+            
+            <p>
+              Inside, you'll find 200 pages of premium cotton paper with a subtle cream tone, 
+              perfect for writing with quill, fountain pen, or modern writing instruments. The 
+              paper is acid-free and designed to last for centuries without yellowing or deteriorating.
+            </p>
+            
+            <h3>Magical Properties</h3>
+            <p>
+              The Dragon's Bindery infuses each creation with a touch of enchantment. This journal 
+              has been crafted during the waxing moon, enhancing its properties for recording creative 
+              thoughts, dreams, and spells. Many customers report their writing feeling more inspired 
+              when recorded in these pages.
+            </p>
+            
+            <div class="feature-box">
+              <h4>Perfect For:</h4>
+              <ul>
+                <li>Spell collections and grimoires</li>
+                <li>Dream journals and divination records</li>
+                <li>Potion recipes and herbal knowledge</li>
+                <li>Creative writing and poetry</li>
+                <li>Sketching and illustrations</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-content" [class.active]="activeTab === 'specifications'">
+          <div class="specifications-grid">
+            <div class="spec-item">
+              <div class="spec-label">Dimensions</div>
+              <div class="spec-value">8.5" x 6" x 1.5"</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Weight</div>
+              <div class="spec-value">1.2 lbs</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Cover Material</div>
+              <div class="spec-value">Genuine full-grain leather</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Paper</div>
+              <div class="spec-value">100% cotton, acid-free, 120 gsm</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Page Count</div>
+              <div class="spec-value">200 pages (100 sheets)</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Binding</div>
+              <div class="spec-value">Traditional Coptic stitch</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Closure</div>
+              <div class="spec-value">Leather strap with antique brass clasp</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Page Style</div>
+              <div class="spec-value">Blank unlined</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Crafted By</div>
+              <div class="spec-value">Eleanor Drakonheart</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Care Instructions</div>
+              <div class="spec-value">Keep away from direct sunlight and moisture</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-content" [class.active]="activeTab === 'reviews'">
+          <div class="reviews-section">
+            <div class="review-stats">
+              <div class="average-rating">
+                <div class="rating-value">4.5</div>
+                <div class="stars">
+                  <i class="material-icons">star</i>
+                  <i class="material-icons">star</i>
+                  <i class="material-icons">star</i>
+                  <i class="material-icons">star</i>
+                  <i class="material-icons">star_half</i>
+                </div>
+                <div class="total-reviews">Based on {{ reviews.length }} reviews</div>
+              </div>
+              
+              <div class="rating-distribution">
+                <div class="rating-bar">
+                  <span class="rating-label">5 Stars</span>
+                  <div class="bar-container">
+                    <div class="bar" style="width: 80%"></div>
+                  </div>
+                  <span class="rating-count">80%</span>
+                </div>
+                <div class="rating-bar">
+                  <span class="rating-label">4 Stars</span>
+                  <div class="bar-container">
+                    <div class="bar" style="width: 15%"></div>
+                  </div>
+                  <span class="rating-count">15%</span>
+                </div>
+                <div class="rating-bar">
+                  <span class="rating-label">3 Stars</span>
+                  <div class="bar-container">
+                    <div class="bar" style="width: 5%"></div>
+                  </div>
+                  <span class="rating-count">5%</span>
+                </div>
+                <div class="rating-bar">
+                  <span class="rating-label">2 Stars</span>
+                  <div class="bar-container">
+                    <div class="bar" style="width: 0%"></div>
+                  </div>
+                  <span class="rating-count">0%</span>
+                </div>
+                <div class="rating-bar">
+                  <span class="rating-label">1 Star</span>
+                  <div class="bar-container">
+                    <div class="bar" style="width: 0%"></div>
+                  </div>
+                  <span class="rating-count">0%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="review-list">
+              <div class="review-item" *ngFor="let review of reviews">
+                <div class="review-header">
+                  <div class="reviewer-info">
+                    <div class="avatar">
+                      <img [src]="review.avatar" [alt]="review.author">
+                    </div>
+                    <div class="reviewer-details">
+                      <div class="reviewer-name">{{ review.author }}</div>
+                      <div class="review-date">{{ review.date | date:'mediumDate' }}</div>
+                    </div>
+                  </div>
+                  <div class="review-rating">
+                    <i class="material-icons" *ngFor="let star of getStars(review.rating)">star</i>
+                    <i class="material-icons" *ngFor="let star of getEmptyStars(review.rating)">star_border</i>
+                  </div>
+                </div>
+                
+                <div class="review-content">
+                  <h4 class="review-title">{{ review.title }}</h4>
+                  <p class="review-comment">{{ review.comment }}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="write-review">
+              <button class="btn">Write a Review</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Related Products -->
+      <div class="related-products" *ngIf="relatedProducts.length > 0">
+        <h2>You May Also Like</h2>
+        
+        <div class="related-grid">
+          <div class="product-card" *ngFor="let relatedProduct of relatedProducts; let i = index" [style.--card-index]="i + 1">
+            <div class="magic-corner top-left"></div>
+            <div class="magic-corner top-right"></div>
+            <div class="magic-corner bottom-left"></div>
+            <div class="magic-corner bottom-right"></div>
+            
+            <a [routerLink]="['/shop/product', relatedProduct._id]" class="product-image-container">
+              <img [src]="relatedProduct.image" [alt]="relatedProduct.name" class="product-image">
+              <div class="product-tag" *ngIf="relatedProduct.isNew">New</div>
+              <div class="product-tag bestseller" *ngIf="relatedProduct.isBestseller">Bestseller</div>
+            </a>
+            
+            <div class="product-info">
+              <h3 class="product-title">
+                <a [routerLink]="['/shop/product', relatedProduct._id]">{{ relatedProduct.name }}</a>
+              </h3>
+              <div class="product-price">${{ relatedProduct.price.toFixed(2) }}</div>
+              <button class="btn primary">
+                <i class="material-icons">shopping_basket</i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

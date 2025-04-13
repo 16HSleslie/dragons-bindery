@@ -1,8 +1,11 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
@@ -22,16 +25,21 @@ export class HomeComponent implements OnInit {
 
   generateSparkles(): void {
     const container = document.getElementById('sparkle-container');
+    console.log('Sparkle container found:', !!container);
+
     if (!container) return;
     
     const sparkleCount = 30;
     const heroSection = container.closest('.hero');
+    console.log('Hero section found:', !!heroSection);
     
     if (!heroSection) return;
     
     // Get hero section dimensions
     const heroWidth = heroSection.clientWidth;
     const heroHeight = heroSection.clientHeight;
+
+    console.log('Hero dimensions:', heroSection.clientWidth, 'x', heroSection.clientHeight);
     
     for (let i = 0; i < sparkleCount; i++) {
       const sparkle = document.createElement('div');
@@ -54,6 +62,7 @@ export class HomeComponent implements OnInit {
       sparkle.style.animationDuration = `${Math.random() * 3 + 2}s`;
       
       container.appendChild(sparkle);
+      console.log('Created sparkle', i);
     }
   }
 }

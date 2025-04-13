@@ -1,0 +1,160 @@
+<!-- src/app/components/admin/product-edit-modal/product-edit-modal.component.html -->
+<div class="modal-overlay" *ngIf="show" (click)="onClose()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Edit Product</h2>
+        <button class="close-btn" (click)="onClose()">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+          <div class="form-grid">
+            <div class="form-grid-col">
+              <!-- Product Image -->
+              <div class="form-group image-upload">
+                <label class="form-label">Product Image</label>
+                <div class="image-preview" [class.has-image]="imagePreview">
+                  <img *ngIf="imagePreview" [src]="imagePreview" alt="Product Preview">
+                  <div class="image-placeholder" *ngIf="!imagePreview">
+                    <i class="material-icons">add_photo_alternate</i>
+                    <span>No image selected</span>
+                  </div>
+                </div>
+                
+                <div class="file-upload">
+                  <label for="productImage" class="file-upload-btn">
+                    <i class="material-icons">upload</i>
+                    Choose Image
+                  </label>
+                  <input 
+                    type="file" 
+                    id="productImage" 
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    (change)="onFileChange($event)"
+                  >
+                  <div class="file-info" *ngIf="imageFile">
+                    {{ imageFile.name }} ({{ (imageFile.size / 1024).toFixed(1) }} KB)
+                  </div>
+                  <div class="file-requirements">
+                    <small>Maximum size: 5MB. Allowed formats: JPEG, PNG, GIF, WEBP</small>
+                  </div>
+                </div>
+                
+                <div class="error-message" *ngIf="error">{{ error }}</div>
+              </div>
+            </div>
+            
+            <div class="form-grid-col">
+              <!-- Product Details -->
+              <div class="form-group">
+                <label for="name" class="form-label">Product Name</label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  formControlName="name" 
+                  class="form-control"
+                  [class.is-invalid]="editForm.get('name')?.invalid && editForm.get('name')?.touched"
+                >
+                <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+                  <span *ngIf="editForm.get('name')?.errors?.['required']">
+                    Product name is required
+                  </span>
+                  <span *ngIf="editForm.get('name')?.errors?.['minlength']">
+                    Product name must be at least 3 characters
+                  </span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="category" class="form-label">Category</label>
+                <select 
+                  id="category" 
+                  formControlName="category" 
+                  class="form-control"
+                  [class.is-invalid]="editForm.get('category')?.invalid && editForm.get('category')?.touched"
+                >
+                  <option value="">Select a category</option>
+                  <option value="journals">Journals</option>
+                  <option value="grimoires">Grimoires</option>
+                  <option value="spellbooks">Spellbooks</option>
+                  <option value="accessories">Accessories</option>
+                  <option value="atlas">Atlas</option>
+                </select>
+                <div class="error-message" *ngIf="editForm.get('category')?.invalid && editForm.get('category')?.touched">
+                  <span *ngIf="editForm.get('category')?.errors?.['required']">
+                    Category is required
+                  </span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="price" class="form-label">Price ($)</label>
+                <input 
+                  type="number" 
+                  id="price" 
+                  formControlName="price" 
+                  class="form-control"
+                  min="0.01" 
+                  step="0.01"
+                  [class.is-invalid]="editForm.get('price')?.invalid && editForm.get('price')?.touched"
+                >
+                <div class="error-message" *ngIf="editForm.get('price')?.invalid && editForm.get('price')?.touched">
+                  <span *ngIf="editForm.get('price')?.errors?.['required']">
+                    Price is required
+                  </span>
+                  <span *ngIf="editForm.get('price')?.errors?.['min']">
+                    Price must be at least $0.01
+                  </span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea 
+                  id="description" 
+                  formControlName="description" 
+                  class="form-control"
+                  rows="5"
+                  [class.is-invalid]="editForm.get('description')?.invalid && editForm.get('description')?.touched"
+                ></textarea>
+                <div class="error-message" *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched">
+                  <span *ngIf="editForm.get('description')?.errors?.['required']">
+                    Description is required
+                  </span>
+                  <span *ngIf="editForm.get('description')?.errors?.['minlength']">
+                    Description must be at least 10 characters
+                  </span>
+                </div>
+              </div>
+              
+              <div class="form-checkboxes">
+                <div class="form-checkbox">
+                  <input type="checkbox" id="isNew" formControlName="isNew">
+                  <label for="isNew">Mark as New</label>
+                </div>
+                
+                <div class="form-checkbox">
+                  <input type="checkbox" id="isBestseller" formControlName="isBestseller">
+                  <label for="isBestseller">Mark as Bestseller</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn" (click)="onClose()">Cancel</button>
+        <button 
+          class="btn primary" 
+          (click)="onSubmit()" 
+          [disabled]="editForm.invalid || loading"
+        >
+          <span class="spinner" *ngIf="loading"></span>
+          <span *ngIf="!loading">Save Changes</span>
+        </button>
+      </div>
+    </div>
+  </div>

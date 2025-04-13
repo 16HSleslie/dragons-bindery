@@ -180,7 +180,7 @@
                         </span>
                       </td>
                       <td class="actions-cell">
-                        <button class="action-btn edit-btn" title="Edit Product">
+                        <button class="action-btn edit-btn" title="Edit Product" (click)="openEditModal(product)">
                           <i class="material-icons">edit</i>
                         </button>
                         <button class="action-btn delete-btn" title="Delete Product">
@@ -214,4 +214,16 @@
         </div>
       </div>
     </div>
+    <app-product-edit-modal
+    [product]="selectedProduct"
+    [show]="showEditModal"
+    (close)="closeEditModal()"
+    (save)="handleSaveProduct($event)"
+  ></app-product-edit-modal>
+  
+  <!-- Success message notification -->
+  <div class="success-notification" *ngIf="updateSuccess">
+    <i class="material-icons">check_circle</i>
+    Product updated successfully!
   </div>
+</div>

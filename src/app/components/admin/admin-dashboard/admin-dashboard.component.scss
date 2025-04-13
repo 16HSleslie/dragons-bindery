@@ -385,3 +385,42 @@
       }
     }
   }
+  .success-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    animation: slideInUp 0.3s ease, fadeOut 0.3s ease 2.7s;
+    z-index: 1000;
+    
+    i {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @keyframes slideInUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }

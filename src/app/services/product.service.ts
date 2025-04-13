@@ -1,7 +1,9 @@
 // src/app/services/product.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, catchError, map } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { delay, tap, map, catchError } from 'rxjs/operators';
+
 
 export interface Product {
   _id: string;
@@ -156,6 +158,24 @@ export class ProductService {
           // Remove from mock data and return success
           this.mockProducts = this.mockProducts.filter(p => p._id !== id);
           return of(true);
+        })
+      );
+  }
+
+  uploadProductImage(file: File): Observable<string> {
+    // In a real application, you would upload the file to your server
+    // This is a mock implementation for demonstration
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    // Real implementation would look like this:
+
+    return this.http.post<{imageUrl: string}>(`${this.apiUrl}/upload`, formData)
+      .pipe(
+        map(response => response.imageUrl),
+        catchError(error => {
+          console.error('Error uploading image:', error);
+          return throwError(() => new Error('Failed to upload image'));
         })
       );
   }

@@ -1,5 +1,5 @@
 .shop-page {
-    padding-top: 120px;
+    padding-top: 0px;
     padding-bottom: 5rem;
   }
   
@@ -439,5 +439,22 @@
   @media (max-width: 576px) {
     .product-grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  // Add to shop.component.scss
+.product-image-container {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .product-title a {
+    text-decoration: none;
+    color: var(--secondary-brown);
+    transition: color 0.3s ease;
+    
+    &:hover {
+      color: var(--primary-brown);
     }
   }

@@ -1,0 +1,217 @@
+<!-- src/app/components/admin/admin-dashboard/admin-dashboard.component.html -->
+<div class="admin-dashboard">
+    <!-- Admin Header -->
+    <header class="admin-header">
+      <div class="container">
+        <div class="admin-header-inner">
+          <div class="logo">
+            <svg class="logo-image" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20,80 Q40,70 35,50 Q30,30 50,20 Q70,10 80,30 Q90,50 80,70 Q70,90 50,80 Q30,70 20,80 Z" fill="#A67C52" />
+              <circle cx="60" cy="40" r="5" fill="#44352E" />
+              <path d="M50,60 Q60,70 70,60" stroke="#44352E" stroke-width="2" fill="none" />
+              <path d="M30,50 L10,40" stroke="#8B9D83" stroke-width="3" />
+              <path d="M30,60 L15,70" stroke="#8B9D83" stroke-width="3" />
+              <path d="M80,30 L95,20" stroke="#8B9D83" stroke-width="3" />
+              <path d="M75,40 L90,45" stroke="#8B9D83" stroke-width="3" />
+            </svg>
+            <span class="admin-title">The Dragon's Bindery - Admin</span>
+          </div>
+  
+          <div class="admin-controls">
+            <a routerLink="/" class="view-site-btn">View Site</a>
+            <button (click)="logout()" class="logout-btn">Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+  
+    <!-- Admin Content -->
+    <div class="admin-content">
+      <div class="container">
+        <div class="admin-content-inner">
+          <!-- Sidebar -->
+          <aside class="admin-sidebar">
+            <nav class="admin-nav">
+              <ul>
+                <li>
+                  <a 
+                    href="javascript:void(0)" 
+                    [class.active]="activeTab === 'dashboard'" 
+                    (click)="setActiveTab('dashboard')"
+                  >
+                    <i class="material-icons">dashboard</i>
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="javascript:void(0)" 
+                    [class.active]="activeTab === 'products'" 
+                    (click)="setActiveTab('products')"
+                  >
+                    <i class="material-icons">inventory_2</i>
+                    Products
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="javascript:void(0)" 
+                    [class.active]="activeTab === 'orders'" 
+                    (click)="setActiveTab('orders')"
+                  >
+                    <i class="material-icons">shopping_bag</i>
+                    Orders
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="javascript:void(0)" 
+                    [class.active]="activeTab === 'customers'" 
+                    (click)="setActiveTab('customers')"
+                  >
+                    <i class="material-icons">people</i>
+                    Customers
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="javascript:void(0)" 
+                    [class.active]="activeTab === 'settings'" 
+                    (click)="setActiveTab('settings')"
+                  >
+                    <i class="material-icons">settings</i>
+                    Settings
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+  
+          <!-- Main Content Area -->
+          <main class="admin-main">
+            <!-- Dashboard Tab -->
+            <div class="admin-tab" *ngIf="activeTab === 'dashboard'">
+              <h1>Dashboard</h1>
+              <div class="dashboard-cards">
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="material-icons">inventory_2</i>
+                  </div>
+                  <div class="card-content">
+                    <h2>{{ products.length }}</h2>
+                    <p>Products</p>
+                  </div>
+                </div>
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="material-icons">shopping_bag</i>
+                  </div>
+                  <div class="card-content">
+                    <h2>0</h2>
+                    <p>Orders</p>
+                  </div>
+                </div>
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="material-icons">people</i>
+                  </div>
+                  <div class="card-content">
+                    <h2>0</h2>
+                    <p>Customers</p>
+                  </div>
+                </div>
+                <div class="dashboard-card">
+                  <div class="card-icon">
+                    <i class="material-icons">payments</i>
+                  </div>
+                  <div class="card-content">
+                    <h2>$0.00</h2>
+                    <p>Revenue</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Products Tab -->
+            <div class="admin-tab" *ngIf="activeTab === 'products'">
+              <div class="tab-header">
+                <h1>Products</h1>
+                <button class="btn primary">
+                  <i class="material-icons">add</i>
+                  Add Product
+                </button>
+              </div>
+  
+              <!-- Loading State -->
+              <div class="loading-container" *ngIf="loading">
+                <div class="spinner"></div>
+                <p>Loading products...</p>
+              </div>
+  
+              <!-- Error Message -->
+              <div class="error-message" *ngIf="error">
+                <p>{{ error }}</p>
+              </div>
+  
+              <!-- Products Table -->
+              <div class="admin-table-container" *ngIf="!loading && !error">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let product of products">
+                      <td class="product-image-cell">
+                        <img [src]="product.image" [alt]="product.name">
+                      </td>
+                      <td>{{ product.name }}</td>
+                      <td>{{ product.category }}</td>
+                      <td>${{ product.price.toFixed(2) }}</td>
+                      <td>
+                        <span class="status-badge" [class.new]="product.isNew" [class.bestseller]="product.isBestseller">
+                          {{ product.isNew ? 'New' : (product.isBestseller ? 'Bestseller' : 'Active') }}
+                        </span>
+                      </td>
+                      <td class="actions-cell">
+                        <button class="action-btn edit-btn" title="Edit Product">
+                          <i class="material-icons">edit</i>
+                        </button>
+                        <button class="action-btn delete-btn" title="Delete Product">
+                          <i class="material-icons">delete</i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+  
+            <!-- Orders Tab -->
+            <div class="admin-tab" *ngIf="activeTab === 'orders'">
+              <h1>Orders</h1>
+              <p>Order management coming soon.</p>
+            </div>
+  
+            <!-- Customers Tab -->
+            <div class="admin-tab" *ngIf="activeTab === 'customers'">
+              <h1>Customers</h1>
+              <p>Customer management coming soon.</p>
+            </div>
+  
+            <!-- Settings Tab -->
+            <div class="admin-tab" *ngIf="activeTab === 'settings'">
+              <h1>Settings</h1>
+              <p>Store settings coming soon.</p>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </div>

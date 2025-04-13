@@ -35,3 +35,9 @@ if (process.env.NODE_ENV === 'production') {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// backend/server.js - Add to your existing server file
+const paymentRoutes = require('./routes/payment');
+
+// Use routes
+app.use('/api/payment', paymentRoutes);

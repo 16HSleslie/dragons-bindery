@@ -1,0 +1,61 @@
+<!-- src/app/components/admin/admin-login/admin-login.component.html -->
+<div class="admin-login-page">
+    <div class="login-container">
+      <div class="login-header">
+        <svg class="logo-image" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20,80 Q40,70 35,50 Q30,30 50,20 Q70,10 80,30 Q90,50 80,70 Q70,90 50,80 Q30,70 20,80 Z" fill="#A67C52" />
+          <circle cx="60" cy="40" r="5" fill="#44352E" />
+          <path d="M50,60 Q60,70 70,60" stroke="#44352E" stroke-width="2" fill="none" />
+          <path d="M30,50 L10,40" stroke="#8B9D83" stroke-width="3" />
+          <path d="M30,60 L15,70" stroke="#8B9D83" stroke-width="3" />
+          <path d="M80,30 L95,20" stroke="#8B9D83" stroke-width="3" />
+          <path d="M75,40 L90,45" stroke="#8B9D83" stroke-width="3" />
+        </svg>
+        <h1>Admin Portal</h1>
+        <p>The Dragon's Bindery</p>
+      </div>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+            type="text" 
+            formControlName="username" 
+            id="username" 
+            [ngClass]="{ 'is-invalid': f['username'].touched && f['username'].errors }"
+          >
+          <div *ngIf="f['username'].touched && f['username'].errors" class="error-message">
+            Username is required
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            formControlName="password" 
+            id="password" 
+            [ngClass]="{ 'is-invalid': f['password'].touched && f['password'].errors }"
+          >
+          <div *ngIf="f['password'].touched && f['password'].errors" class="error-message">
+            Password is required
+          </div>
+        </div>
+  
+        <div *ngIf="error" class="alert-error">
+          {{ error }}
+        </div>
+  
+        <div class="form-actions">
+          <button type="submit" [disabled]="loading || loginForm.invalid" class="btn primary login-btn">
+            <span *ngIf="loading" class="spinner"></span>
+            <span *ngIf="!loading">Login</span>
+          </button>
+        </div>
+  
+        <div class="form-footer">
+          <a routerLink="/">Return to Shop</a>
+        </div>
+      </form>
+    </div>
+  </div>

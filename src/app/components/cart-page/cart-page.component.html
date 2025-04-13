@@ -1,16 +1,22 @@
 <!-- src/app/components/cart-page/cart-page.component.html -->
 <div class="cart-page">
+    <div class="page-banner">
+      <div class="container">
+        <h1>Your Enchanted Cart</h1>
+        <p>Review your magical items before checkout</p>
+      </div>
+    </div>
+  
     <div class="container">
-      <h1>Your Enchanted Cart</h1>
-      
       <div class="empty-cart" *ngIf="cartItems.length === 0">
         <div class="empty-cart-icon">🧙‍♂️</div>
-        <p>Your magical cart is empty</p>
-        <button class="btn" routerLink="/shop">Discover Enchanting Items</button>
+        <h2>Your magical cart is empty</h2>
+        <p>Looks like your cart needs some enchantment. Explore our collection to find the perfect magical item for you.</p>
+        <button class="btn primary" routerLink="/shop">Discover Enchanting Items</button>
       </div>
       
       <div class="cart-content" *ngIf="cartItems.length > 0">
-        <div class="cart-items">
+        <div class="cart-items-container">
           <div class="cart-header">
             <div class="product-col">Product</div>
             <div class="price-col">Price</div>
@@ -19,60 +25,103 @@
             <div class="actions-col"></div>
           </div>
           
-          <div class="cart-item" *ngFor="let item of cartItems">
-            <div class="product-col">
-              <div class="product-info">
-                <img [src]="item.product.image" [alt]="item.product.name">
-                <div class="product-details">
-                  <h3>{{ item.product.name }}</h3>
-                  <p>{{ item.product.description | slice:0:100 }}...</p>
+          <div class="cart-items">
+            <div class="cart-item" *ngFor="let item of cartItems; let i = index" [attr.data-index]="i">
+              <div class="product-col">
+                <div class="product-info">
+                  <div class="product-image">
+                    <img [src]="item.product.image" [alt]="item.product.name">
+                  </div>
+                  <div class="product-details">
+                    <h3>{{ item.product.name }}</h3>
+                    <p class="product-description">{{ item.product.description | slice:0:100 }}...</p>
+                    <div class="product-category">Category: {{ item.product.category | titlecase }}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div class="price-col">${{ item.product.price.toFixed(2) }}</div>
-            
-            <div class="quantity-col">
-              <div class="quantity-control">
-                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity - 1)">-</button>
-                <input type="number" [value]="item.quantity" min="1" (change)="handleQuantityChange(item.product._id, $event)">
-                <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity + 1)">+</button>
+              
+              <div class="price-col">${{ item.product.price.toFixed(2) }}</div>
+              
+              <div class="quantity-col">
+                <div class="quantity-control">
+                  <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity - 1)">
+                    <i class="material-icons">remove</i>
+                  </button>
+                  <input type="number" [value]="item.quantity" min="1" (change)="handleQuantityChange(item.product._id, $event)">
+                  <button class="qty-btn" (click)="updateQuantity(item.product._id, item.quantity + 1)">
+                    <i class="material-icons">add</i>
+                  </button>
+                </div>
               </div>
-            </div>
-            
-            <div class="total-col">${{ (item.product.price * item.quantity).toFixed(2) }}</div>
-            
-            <div class="actions-col">
-              <button class="remove-btn" (click)="removeItem(item.product._id)">
-                <i class="material-icons">delete</i>
-              </button>
+              
+              <div class="total-col">${{ (item.product.price * item.quantity).toFixed(2) }}</div>
+              
+              <div class="actions-col">
+                <button class="remove-btn" (click)="removeItem(item.product._id)" title="Remove Item">
+                  <i class="material-icons">delete_outline</i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
         
-        <div class="cart-summary">
-          <h2>Cart Summary</h2>
-          
-          <div class="summary-row">
-            <span>Subtotal:</span>
-            <span>${{ cartTotal.toFixed(2) }}</span>
+        <div class="cart-summary-container">
+          <div class="cart-summary">
+            <h2>Order Summary</h2>
+            
+            <div class="summary-item">
+              <span class="summary-label">Items ({{ cartItems.length }}):</span>
+              <span class="summary-value">${{ cartTotal.toFixed(2) }}</span>
+            </div>
+            
+            <div class="summary-item">
+              <span class="summary-label">Shipping:</span>
+              <span class="summary-value">Free</span>
+            </div>
+            
+            <div class="summary-divider"></div>
+            
+            <div class="summary-item total">
+              <span class="summary-label">Order Total:</span>
+              <span class="summary-value">${{ cartTotal.toFixed(2) }}</span>
+            </div>
+            
+            <div class="cart-actions">
+              <button class="btn primary checkout-btn" routerLink="/checkout">
+                <i class="material-icons">lock</i>
+                Proceed to Checkout
+              </button>
+              <button class="btn secondary continue-btn" routerLink="/shop">
+                Continue Shopping
+              </button>
+            </div>
+            
+            <div class="cart-notes">
+              <div class="secure-checkout">
+                <i class="material-icons">verified</i>
+                <span>Secure Checkout</span>
+              </div>
+              <div class="shipping-note">
+                <i class="material-icons">local_shipping</i>
+                <span>Free Shipping on orders over $75</span>
+              </div>
+            </div>
           </div>
           
-          <div class="summary-row">
-            <span>Shipping:</span>
-            <span>Free</span>
+          <div class="promo-code">
+            <h3>Have a Promo Code?</h3>
+            <div class="promo-input">
+              <input type="text" placeholder="Enter code">
+              <button class="apply-btn">Apply</button>
+            </div>
           </div>
-          
-          <div class="summary-row total">
-            <span>Total:</span>
-            <span>${{ cartTotal.toFixed(2) }}</span>
-          </div>
-          
-          <div class="cart-actions">
-            <button class="btn" (click)="clearCart()">Clear Cart</button>
-            <button class="btn" routerLink="/shop">Continue Shopping</button>
-            <button class="btn primary" routerLink="/checkout">Proceed to Checkout</button>
-          </div>
+        </div>
+        
+        <div class="cart-footer">
+          <button class="btn clear-cart-btn" (click)="clearCart()">
+            <i class="material-icons">remove_shopping_cart</i>
+            Clear Cart
+          </button>
         </div>
       </div>
     </div>

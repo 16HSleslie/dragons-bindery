@@ -1,7 +1,7 @@
 // src/app/services/product.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, catchError } from 'rxjs';
+import { Observable, of, catchError, map } from 'rxjs';
 
 export interface Product {
   _id: string;
@@ -110,6 +110,52 @@ export class ProductService {
           console.log('API error, using mock data:', error);
           const product = this.mockProducts.find(p => p._id === id);
           return of(product as Product);
+        })
+      );
+  }
+
+  createProduct(product: Omit<Product, '_id'>): Observable<Product> {
+    return this.http.post<Product>(this.apiUrl, product)
+      .pipe(
+        catchError(error => {
+          console.log('API error, using mock response:', error);
+          // Create a mock response with an ID
+          const mockProduct: Product = {
+            ...product,
+            _id: 'new-' + Date.now(),
+            createdAt: new Date()
+          };
+          return of(mockProduct);
+        })
+      );
+  }
+
+  updateProduct(id: string, product: Partial<Product>): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${id}`, product)
+      .pipe(
+        catchError(error => {
+          console.log('API error, using mock response:', error);
+          // Return the updated product as a mock response
+          const updatedProduct = this.mockProducts.find(p => p._id === id);
+          if (updatedProduct) {
+            Object.assign(updatedProduct, product);
+            return of(updatedProduct);
+          }
+          return of({} as Product);
+        })
+      );
+  }
+
+  deleteProduct(id: string): Observable<boolean> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`)
+      .pipe(
+        // Map to true on success
+        map(() => true),
+        catchError(error => {
+          console.log('API error, using mock response:', error);
+          // Remove from mock data and return success
+          this.mockProducts = this.mockProducts.filter(p => p._id !== id);
+          return of(true);
         })
       );
   }

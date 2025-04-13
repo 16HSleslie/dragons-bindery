@@ -1,0 +1,71 @@
+.page-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--cream);
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-transition.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.book-wrapper {
+    perspective: 1000px;
+    width: 200px;
+    height: 300px;
+}
+
+.book {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    animation: pageFlip 1.5s ease-in-out;
+}
+
+.book-cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-brown);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backface-visibility: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+.book-cover.front {
+    transform: rotateY(0deg);
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20,80 Q40,70 35,50 Q30,30 50,20 Q70,10 80,30 Q90,50 80,70 Q70,90 50,80 Q30,70 20,80 Z' fill='%23F7F3E9' fill-opacity='0.1' /%3E%3C/svg%3E");
+    background-size: 50px 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--cream);
+    text-align: center;
+}
+
+.book-cover.back {
+    transform: rotateY(180deg);
+    background-color: var(--accent-green);
+}
+
+.book-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}

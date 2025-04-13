@@ -1,0 +1,119 @@
+.announcement-bar {
+    background-color: var(--accent-pink);
+    color: var(--dark-text);
+    text-align: center;
+    padding: 8px 0;
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.header {
+    position: relative;
+    background-color: rgba(247, 243, 233, 0.97);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    border-bottom: 1px solid var(--beige);
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-image {
+    width: 60px;
+    margin-right: 1.5rem;
+    animation: float 6s ease-in-out infinite;
+}
+
+.logo-text {
+    font-family: 'Cinzel', serif;
+}
+
+.site-title {
+    font-size: 1.8rem;
+    color: var(--secondary-brown);
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.site-description {
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--primary-brown);
+}
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 2.5rem;
+}
+
+.main-nav ul li a {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--secondary-brown);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    padding: 5px 0;
+}
+
+.main-nav ul li a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary-brown);
+    transition: width 0.3s ease;
+}
+
+.main-nav ul li a:hover:after {
+    width: 100%;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.search-icon, .cart-icon {
+    color: var(--secondary-brown);
+    transition: all 0.3s ease;
+}
+
+.search-icon:hover, .cart-icon:hover {
+    color: var(--primary-brown);
+    transform: scale(1.1);
+}
+
+.cart-wrapper {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--accent-pink);
+    color: var(--dark-text);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    font-family: 'Cinzel', serif;
+}

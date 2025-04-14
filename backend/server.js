@@ -8,9 +8,13 @@ const path = require('path');
 const multer = require('multer');
 const productsRoutes = require('./routes/products');
 const paymentRoutes = require('./routes/payment');
+const logger = require('./utils/logger');
+const morgan = require('morgan');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+app.use(morgan('combined', { stream: logger.stream }));
 
 // Middleware
 app.use(cors());
@@ -44,16 +48,27 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true
 })
 .then(() => {
-  console.log('===================================');
-  console.log('MongoDB connected successfully');
-  console.log('Database: dragon-bindery');
-  console.log('===================================');
+  logger.info('===================================');
+  logger.info('MongoDB connected successfully');
+  logger.info(`Database: ${mongoose.connection.name}`);
+  logger.info('===================================');
 })
 .catch(err => {
-  console.error('===================================');
-  console.error('MongoDB connection FAILED');
-  console.error(err);
-  console.error('===================================');
+  logger.error('===================================');
+  logger.error('MongoDB connection FAILED');
+  logger.error(err);
+  logger.error('===================================');
+});
+
+// global error handler
+app.use((err, req, res, next) => {
+  logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+  res.status(err.status || 500).send({
+    error: {
+      status: err.status || 500,
+      message: process.env.NODE_ENV === 'production' ? 'Server Error' : err.message
+    }
+  });
 });
 
 // API Routes

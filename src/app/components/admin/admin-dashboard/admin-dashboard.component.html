@@ -1,586 +1,392 @@
 <!-- src/app/components/admin/admin-dashboard/admin-dashboard.component.html -->
 <div class="admin-wrapper">
-  <!-- Admin Header -->
-  <header class="admin-header">
-    <div class="container">
-      <div class="admin-header-inner">
-        <div class="logo">
-          <svg class="logo-image" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20,80 Q40,70 35,50 Q30,30 50,20 Q70,10 80,30 Q90,50 80,70 Q70,90 50,80 Q30,70 20,80 Z" fill="#7D5642" />
-            <circle cx="60" cy="40" r="5" fill="#362D25" />
-            <path d="M50,60 Q60,70 70,60" stroke="#362D25" stroke-width="2" fill="none" />
-            <path d="M30,50 L10,40" stroke="#4A5D47" stroke-width="3" />
-            <path d="M30,60 L15,70" stroke="#4A5D47" stroke-width="3" />
-            <path d="M80,30 L95,20" stroke="#4A5D47" stroke-width="3" />
-            <path d="M75,40 L90,45" stroke="#4A5D47" stroke-width="3" />
-            <path d="M50,30 C60,28 70,32 75,40" stroke="#D4AF37" stroke-width="1.5" fill="none" />
-          </svg>
-          <span class="admin-title">The Dragon's Bindery - Admin Portal</span>
-        </div>
+  <!-- Simplified Side Navigation -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20,80 Q40,70 35,50 Q30,30 50,20 Q70,10 80,30 Q90,50 80,70 Q70,90 50,80 Q30,70 20,80 Z" fill="#7D5642" />
+          <circle cx="60" cy="40" r="5" fill="#362D25" />
+        </svg>
+        <h1 class="brand-name">Dragon's Bindery</h1>
+      </div>
+    </div>
+    
+    <div class="sidebar-content">
+      <nav class="admin-nav">
+        <a class="nav-item" [class.active]="activeTab === 'dashboard'" (click)="setActiveTab('dashboard')">
+          <i class="material-icons">dashboard</i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" [class.active]="activeTab === 'products'" (click)="setActiveTab('products')">
+          <i class="material-icons">inventory_2</i>
+          <span>Products</span>
+        </a>
+        <a class="nav-item" [class.active]="activeTab === 'orders'" (click)="setActiveTab('orders')">
+          <i class="material-icons">shopping_bag</i>
+          <span>Orders</span>
+        </a>
+        <a class="nav-item" [class.active]="activeTab === 'customers'" (click)="setActiveTab('customers')">
+          <i class="material-icons">people</i>
+          <span>Customers</span>
+        </a>
+        <a class="nav-item" [class.active]="activeTab === 'settings'" (click)="setActiveTab('settings')">
+          <i class="material-icons">settings</i>
+          <span>Settings</span>
+        </a>
+      </nav>
+    </div>
+    
+    <div class="sidebar-footer">
+      <a class="store-link" routerLink="/">
+        <i class="material-icons">storefront</i>
+        <span>View Store</span>
+      </a>
+      
+      <button class="logout-btn" (click)="logout()">
+        <i class="material-icons">logout</i>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </aside>
 
-        <div class="admin-controls">
-          <a routerLink="/" class="view-site-btn">
-            <i class="material-icons">visibility</i>
-            View Site
-          </a>
-          <button (click)="logout()" class="logout-btn">
-            <i class="material-icons">logout</i>
-            Logout
+  <!-- Main Content Area -->
+  <main class="admin-main">
+    <!-- Top Header -->
+    <header class="admin-header">
+      <div class="page-title">
+        <h2 *ngIf="activeTab === 'dashboard'">Dashboard</h2>
+        <h2 *ngIf="activeTab === 'products'">Products</h2>
+        <h2 *ngIf="activeTab === 'orders'">Orders</h2>
+        <h2 *ngIf="activeTab === 'customers'">Customers</h2>
+        <h2 *ngIf="activeTab === 'settings'">Settings</h2>
+      </div>
+      
+      <div class="header-actions">
+        <div class="user-info">
+          <span class="user-greeting">Welcome, Shopkeeper</span>
+          <div class="user-avatar">
+            <i class="material-icons">face</i>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Notifications -->
+    <div class="notification success" *ngIf="updateSuccess">
+      <i class="material-icons">check_circle</i>
+      <span>{{ successMessage }}</span>
+      <button class="close-btn" (click)="updateSuccess = false">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    
+    <div class="notification error" *ngIf="error">
+      <i class="material-icons">error</i>
+      <span>{{ error }}</span>
+      <button class="close-btn" (click)="error = ''">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    
+    <!-- Dashboard Tab -->
+    <div class="content-area" *ngIf="activeTab === 'dashboard'">
+      <div class="stats-grid">
+        <div class="stat-card products">
+          <div class="stat-icon">
+            <i class="material-icons">inventory_2</i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-value">{{ productCount }}</h3>
+            <p class="stat-label">Products</p>
+          </div>
+        </div>
+        
+        <div class="stat-card orders">
+          <div class="stat-icon">
+            <i class="material-icons">shopping_bag</i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-value">{{ orderCount }}</h3>
+            <p class="stat-label">Orders</p>
+          </div>
+        </div>
+        
+        <div class="stat-card customers">
+          <div class="stat-icon">
+            <i class="material-icons">people</i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-value">{{ customerCount }}</h3>
+            <p class="stat-label">Customers</p>
+          </div>
+        </div>
+        
+        <div class="stat-card revenue">
+          <div class="stat-icon">
+            <i class="material-icons">payments</i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-value">${{ totalRevenue.toFixed(2) }}</h3>
+            <p class="stat-label">Total Revenue</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard-cards">
+        <div class="dashboard-card actions-card">
+          <h3 class="card-title">Quick Actions</h3>
+          <div class="card-content">
+            <button class="action-btn" (click)="handleQuickAction('addProduct')">
+              <i class="material-icons">add_circle</i>
+              <span>Add New Product</span>
+            </button>
+            <button class="action-btn" (click)="setActiveTab('orders')">
+              <i class="material-icons">receipt_long</i>
+              <span>View Orders</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="dashboard-card activity-card">
+          <h3 class="card-title">Recent Activity</h3>
+          <div class="card-content">
+            <div class="activity-list">
+              <div class="activity-item" *ngFor="let activity of recentActivities">
+                <div class="activity-icon">
+                  <i class="material-icons">{{ activity.icon }}</i>
+                </div>
+                <div class="activity-details">
+                  <p class="activity-text">{{ activity.description }}</p>
+                  <p class="activity-time">{{ activity.time | date:'medium' }}</p>
+                </div>
+              </div>
+              
+              <div class="empty-state" *ngIf="recentActivities.length === 0">
+                <p>No recent activity to display</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Products Tab -->
+    <div class="content-area" *ngIf="activeTab === 'products'">
+      <div class="content-header">
+        <div class="header-left">
+          <div class="search-container">
+            <i class="material-icons">search</i>
+            <input type="text" placeholder="Search products..." 
+                   [(ngModel)]="productSearchTerm" 
+                   (input)="filterProducts()">
+            <button *ngIf="productSearchTerm" class="clear-search" (click)="clearProductSearch()">
+              <i class="material-icons">close</i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <div class="view-toggle">
+            <button [class.active]="productViewMode === 'grid'" (click)="setProductViewMode('grid')">
+              <i class="material-icons">grid_view</i>
+            </button>
+            <button [class.active]="productViewMode === 'list'" (click)="setProductViewMode('list')">
+              <i class="material-icons">view_list</i>
+            </button>
+          </div>
+          
+          <button class="add-product-btn" (click)="openAddProductModal()">
+            <i class="material-icons">add</i>
+            <span>Add Product</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="filters-bar">
+        <div class="filter-group">
+          <label>Category:</label>
+          <select [(ngModel)]="productCategoryFilter" (change)="filterProducts()">
+            <option value="">All Categories</option>
+            <option *ngFor="let category of productCategories" [value]="category">{{ category }}</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Status:</label>
+          <select [(ngModel)]="productStatusFilter" (change)="filterProducts()">
+            <option value="">All Status</option>
+            <option value="isNew">New</option>
+            <option value="isBestseller">Bestseller</option>
+          </select>
+        </div>
+        
+        <div class="results-count">
+          <span>{{ filteredProducts.length }}</span> products
+        </div>
+      </div>
+      
+      <!-- Product Grid View -->
+      <div class="products-grid" *ngIf="productViewMode === 'grid' && filteredProducts.length > 0">
+        <div class="product-card" *ngFor="let product of filteredProducts">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.name">
+            <div class="product-badges">
+              <span class="badge new" *ngIf="product.isNew">New</span>
+              <span class="badge bestseller" *ngIf="product.isBestseller">Bestseller</span>
+            </div>
+          </div>
+          
+          <div class="product-details">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-category">{{ product.category }}</p>
+            <p class="product-price">${{ product.price.toFixed(2) }}</p>
+          </div>
+          
+          <div class="product-actions">
+            <button class="action-icon edit" (click)="openEditModal(product)" title="Edit">
+              <i class="material-icons">edit</i>
+            </button>
+            <button class="action-icon view" [routerLink]="['/shop/product', product._id]" title="View">
+              <i class="material-icons">visibility</i>
+            </button>
+            <button class="action-icon delete" (click)="confirmDeleteProduct(product)" title="Delete">
+              <i class="material-icons">delete</i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Product List View -->
+      <div class="products-table" *ngIf="productViewMode === 'list' && filteredProducts.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th class="image-col">Image</th>
+              <th class="name-col" (click)="sortProducts('name')">
+                Name
+                <i class="material-icons sort-icon" *ngIf="productSortField === 'name'">
+                  {{ productSortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </i>
+              </th>
+              <th class="category-col" (click)="sortProducts('category')">
+                Category
+                <i class="material-icons sort-icon" *ngIf="productSortField === 'category'">
+                  {{ productSortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </i>
+              </th>
+              <th class="price-col" (click)="sortProducts('price')">
+                Price
+                <i class="material-icons sort-icon" *ngIf="productSortField === 'price'">
+                  {{ productSortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </i>
+              </th>
+              <th class="status-col">Status</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of filteredProducts">
+              <td class="image-col">
+                <img [src]="product.image" [alt]="product.name">
+              </td>
+              <td class="name-col">{{ product.name }}</td>
+              <td class="category-col">{{ product.category }}</td>
+              <td class="price-col">${{ product.price.toFixed(2) }}</td>
+              <td class="status-col">
+                <span class="badge" 
+                      [class.new]="product.isNew" 
+                      [class.bestseller]="product.isBestseller">
+                  {{ product.isNew ? 'New' : (product.isBestseller ? 'Bestseller' : 'Active') }}
+                </span>
+              </td>
+              <td class="actions-col">
+                <div class="action-buttons">
+                  <button class="action-icon edit" (click)="openEditModal(product)" title="Edit">
+                    <i class="material-icons">edit</i>
+                  </button>
+                  <button class="action-icon view" [routerLink]="['/shop/product', product._id]" title="View">
+                    <i class="material-icons">visibility</i>
+                  </button>
+                  <button class="action-icon delete" (click)="confirmDeleteProduct(product)" title="Delete">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Empty state for no products -->
+      <div class="empty-state" *ngIf="filteredProducts.length === 0">
+        <i class="material-icons">inventory_2</i>
+        <h3>No products found</h3>
+        <p>Try adjusting your search or filters, or add a new product</p>
+        <div class="empty-actions">
+          <button class="secondary-btn" *ngIf="productSearchTerm || productCategoryFilter || productStatusFilter" (click)="resetProductFilters()">
+            Clear Filters
+          </button>
+          <button class="primary-btn" (click)="openAddProductModal()">
+            Add Product
           </button>
         </div>
       </div>
     </div>
-  </header>
-
-  <!-- Admin Content -->
-  <div class="admin-content">
-    <div class="container">
-      <div class="admin-content-inner">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-          <div class="user-welcome">
-            <div class="user-avatar">
-              <i class="material-icons">face</i>
-            </div>
-            <div class="user-info">
-              <p class="welcome-text">Welcome</p>
-              <p class="user-name">Shop Keeper</p>
-            </div>
-          </div>
-          
-          <div class="help-card">
-            <div class="help-card-icon">
-              <i class="material-icons">help_outline</i>
-            </div>
-            <div class="help-card-content">
-              <h4>Need Help?</h4>
-              <p>Click any <i class="material-icons help-hint">help_outline</i> icon for guidance or view our <a href="#" (click)="showHelp()">Tutorials</a>.</p>
-            </div>
-          </div>
-
-          <nav class="admin-nav">
-            <ul>
-              <li>
-                <a 
-                  href="javascript:void(0)" 
-                  [class.active]="activeTab === 'dashboard'" 
-                  (click)="setActiveTab('dashboard')"
-                >
-                  <i class="material-icons">dashboard</i>
-                  <span>Dashboard</span>
-                  <i class="material-icons help-icon" (click)="showTabHelp('dashboard', $event)">help_outline</i>
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="javascript:void(0)" 
-                  [class.active]="activeTab === 'products'" 
-                  (click)="setActiveTab('products')"
-                >
-                  <i class="material-icons">inventory_2</i>
-                  <span>Products</span>
-                  <i class="material-icons help-icon" (click)="showTabHelp('products', $event)">help_outline</i>
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="javascript:void(0)" 
-                  [class.active]="activeTab === 'orders'" 
-                  (click)="setActiveTab('orders')"
-                >
-                  <i class="material-icons">shopping_bag</i>
-                  <span>Orders</span>
-                  <i class="material-icons help-icon" (click)="showTabHelp('orders', $event)">help_outline</i>
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="javascript:void(0)" 
-                  [class.active]="activeTab === 'customers'" 
-                  (click)="setActiveTab('customers')"
-                >
-                  <i class="material-icons">people</i>
-                  <span>Customers</span>
-                  <i class="material-icons help-icon" (click)="showTabHelp('customers', $event)">help_outline</i>
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="javascript:void(0)" 
-                  [class.active]="activeTab === 'settings'" 
-                  (click)="setActiveTab('settings')"
-                >
-                  <i class="material-icons">settings</i>
-                  <span>Settings</span>
-                  <i class="material-icons help-icon" (click)="showTabHelp('settings', $event)">help_outline</i>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="admin-main">
-          <!-- Loading Spinner -->
-          <div class="loading-overlay" *ngIf="loading">
-            <div class="spinner"></div>
-            <p>{{ 'Loading...' }}</p>
-          </div>
-
-          <!-- Success Message -->
-          <div class="success-message" *ngIf="updateSuccess">
-            <i class="material-icons">check_circle</i>
-            <span>{{ successMessage }}</span>
-            <button class="close-btn" (click)="updateSuccess = false; successMessage = '';">
-              <i class="material-icons">close</i>
-            </button>
-          </div>
-
-          <!-- Error Message -->
-          <div class="error-message" *ngIf="error">
-            <i class="material-icons">error</i>
-            <span>{{ error }}</span>
-            <button class="close-btn" (click)="error = ''">
-              <i class="material-icons">close</i>
-            </button>
-          </div>
-
-          <!-- Dashboard Tab -->
-          <div class="admin-tab" *ngIf="activeTab === 'dashboard'">
-            <div class="admin-tab-header">
-              <h1>Dashboard</h1>
-              <button class="help-btn" (click)="showTabHelp('dashboard')">
-                <i class="material-icons">help_outline</i>
-                Help with Dashboard
-              </button>
-            </div>
-
-            <div class="dashboard-overview">
-              <div class="stat-card">
-                <div class="stat-icon products-icon">
-                  <i class="material-icons">inventory_2</i>
-                </div>
-                <div class="stat-content">
-                  <h3 class="stat-value">{{ productCount }}</h3>
-                  <p class="stat-label">Products</p>
-                </div>
-                <div class="stat-actions">
-                  <button class="stat-action-btn" (click)="setActiveTab('products')">
-                    <i class="material-icons">visibility</i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="stat-card">
-                <div class="stat-icon orders-icon">
-                  <i class="material-icons">shopping_bag</i>
-                </div>
-                <div class="stat-content">
-                  <h3 class="stat-value">{{ orderCount }}</h3>
-                  <p class="stat-label">Orders</p>
-                </div>
-                <div class="stat-actions">
-                  <button class="stat-action-btn" (click)="setActiveTab('orders')">
-                    <i class="material-icons">visibility</i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="stat-card">
-                <div class="stat-icon customers-icon">
-                  <i class="material-icons">people</i>
-                </div>
-                <div class="stat-content">
-                  <h3 class="stat-value">{{ customerCount }}</h3>
-                  <p class="stat-label">Customers</p>
-                </div>
-                <div class="stat-actions">
-                  <button class="stat-action-btn" (click)="setActiveTab('customers')">
-                    <i class="material-icons">visibility</i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="stat-card">
-                <div class="stat-icon revenue-icon">
-                  <i class="material-icons">payments</i>
-                </div>
-                <div class="stat-content">
-                  <h3 class="stat-value">${{ totalRevenue.toFixed(2) }}</h3>
-                  <p class="stat-label">Total Revenue</p>
-                </div>
-                <div class="stat-actions">
-                  <button class="stat-action-btn" (click)="setActiveTab('orders')">
-                    <i class="material-icons">visibility</i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="quick-actions">
-              <h2>Quick Actions</h2>
-              <div class="quick-actions-grid">
-                <div class="quick-action-card" (click)="handleQuickAction('addProduct')">
-                  <i class="material-icons">add_circle</i>
-                  <span>Add New Product</span>
-                </div>
-                <div class="quick-action-card" (click)="handleQuickAction('viewOrders')">
-                  <i class="material-icons">receipt_long</i>
-                  <span>View Recent Orders</span>
-                </div>
-                <div class="quick-action-card" (click)="handleQuickAction('updateInventory')">
-                  <i class="material-icons">update</i>
-                  <span>Update Inventory</span>
-                </div>
-                <div class="quick-action-card" (click)="handleQuickAction('settings')">
-                  <i class="material-icons">settings</i>
-                  <span>Store Settings</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="recent-activity">
-              <h2>Recent Activity</h2>
-              <div class="activity-timeline">
-                <div class="activity-item" *ngFor="let activity of recentActivities">
-                  <div class="activity-icon">
-                    <i class="material-icons">{{ activity.icon }}</i>
-                  </div>
-                  <div class="activity-content">
-                    <p class="activity-text">{{ activity.description }}</p>
-                    <p class="activity-time">{{ activity.time | date:'medium' }}</p>
-                  </div>
-                </div>
-
-                <div class="activity-empty" *ngIf="recentActivities.length === 0">
-                  <i class="material-icons">history</i>
-                  <p>No recent activity to display</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Products Tab -->
-          <div class="admin-tab" *ngIf="activeTab === 'products'">
-            <div class="admin-tab-header">
-              <h1>Product Management</h1>
-              <div class="header-actions">
-                <button class="help-btn" (click)="showTabHelp('products')">
-                  <i class="material-icons">help_outline</i>
-                  Help
-                </button>
-                <button class="add-btn" (click)="openAddProductModal()">
-                  <i class="material-icons">add</i>
-                  Add New Product
-                </button>
-              </div>
-            </div>
-
-            <!-- Product Search & Filters -->
-            <div class="search-filters-container">
-              <div class="search-box">
-                <i class="material-icons">search</i>
-                <input 
-                  type="text" 
-                  placeholder="Search products by name, description or category..." 
-                  [(ngModel)]="productSearchTerm"
-                  (input)="filterProducts()"
-                >
-                <button *ngIf="productSearchTerm" class="clear-search" (click)="clearProductSearch()">
-                  <i class="material-icons">close</i>
-                </button>
-              </div>
-              
-              <div class="filter-group">
-                <label>Category:</label>
-                <select [(ngModel)]="productCategoryFilter" (change)="filterProducts()">
-                  <option value="">All Categories</option>
-                  <option *ngFor="let category of productCategories" [value]="category">{{ category }}</option>
-                </select>
-              </div>
-
-              <div class="filter-group">
-                <label>Status:</label>
-                <select [(ngModel)]="productStatusFilter" (change)="filterProducts()">
-                  <option value="">All Status</option>
-                  <option value="isNew">New</option>
-                  <option value="isBestseller">Bestseller</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Product Count & View Toggle -->
-            <div class="results-controls">
-              <p class="results-count">
-                <span>{{ filteredProducts.length }}</span> products found
-                <span *ngIf="productSearchTerm || productCategoryFilter || productStatusFilter">
-                  (Filtered from {{ products.length }} total)
-                </span>
-              </p>
-              
-              <div class="view-toggle">
-                <button 
-                  [class.active]="productViewMode === 'grid'" 
-                  (click)="setProductViewMode('grid')"
-                  title="Grid View"
-                >
-                  <i class="material-icons">grid_view</i>
-                </button>
-                <button 
-                  [class.active]="productViewMode === 'list'" 
-                  (click)="setProductViewMode('list')"
-                  title="List View"
-                >
-                  <i class="material-icons">view_list</i>
-                </button>
-              </div>
-            </div>
-
-            <!-- No Results Message -->
-            <div class="no-results" *ngIf="filteredProducts.length === 0">
-              <i class="material-icons">search_off</i>
-              <h3>No products found</h3>
-              <p>Try adjusting your search or filters, or <a href="#" (click)="openAddProductModal()">add a new product</a>.</p>
-              <button class="clear-filters-btn" *ngIf="productSearchTerm || productCategoryFilter || productStatusFilter" (click)="resetProductFilters()">
-                <i class="material-icons">filter_alt_off</i>
-                Clear All Filters
-              </button>
-            </div>
-
-            <!-- Grid View -->
-            <div class="products-grid" *ngIf="productViewMode === 'grid' && filteredProducts.length > 0">
-              <div class="product-card" *ngFor="let product of filteredProducts">
-                <div class="product-image-container">
-                  <img [src]="product.image" [alt]="product.name">
-                  <div class="product-badges">
-                    <span class="product-badge new" *ngIf="product.isNew">New</span>
-                    <span class="product-badge bestseller" *ngIf="product.isBestseller">Bestseller</span>
-                  </div>
-                </div>
-                <div class="product-details">
-                  <h3 class="product-name">{{ product.name }}</h3>
-                  <p class="product-category">{{ product.category }}</p>
-                  <p class="product-price">${{ product.price.toFixed(2) }}</p>
-                  <div class="product-actions">
-                    <button class="edit-btn" (click)="openEditModal(product)" title="Edit Product">
-                      <i class="material-icons">edit</i>
-                    </button>
-                    <button class="view-btn" [routerLink]="['/shop/product', product._id]" title="View Product">
-                      <i class="material-icons">visibility</i>
-                    </button>
-                    <button class="delete-btn" (click)="confirmDeleteProduct(product)" title="Delete Product">
-                      <i class="material-icons">delete</i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- List View -->
-            <div class="products-table-container" *ngIf="productViewMode === 'list' && filteredProducts.length > 0">
-              <table class="products-table">
-                <thead>
-                  <tr>
-                    <th (click)="sortProducts('image')">Image</th>
-                    <th (click)="sortProducts('name')">
-                      Name
-                      <i class="material-icons sort-icon" *ngIf="productSortField === 'name'">
-                        {{ productSortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                      </i>
-                    </th>
-                    <th (click)="sortProducts('category')">
-                      Category
-                      <i class="material-icons sort-icon" *ngIf="productSortField === 'category'">
-                        {{ productSortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                      </i>
-                    </th>
-                    <th (click)="sortProducts('price')">
-                      Price
-                      <i class="material-icons sort-icon" *ngIf="productSortField === 'price'">
-                        {{ productSortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                      </i>
-                    </th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let product of filteredProducts">
-                    <td class="product-image-cell">
-                      <img [src]="product.image" [alt]="product.name">
-                    </td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>${{ product.price.toFixed(2) }}</td>
-                    <td>
-                      <span class="status-badge" 
-                            [class.new]="product.isNew" 
-                            [class.bestseller]="product.isBestseller">
-                        {{ product.isNew ? 'New' : (product.isBestseller ? 'Bestseller' : 'Active') }}
-                      </span>
-                    </td>
-                    <td class="actions-cell">
-                      <button class="action-btn edit-btn" title="Edit Product" (click)="openEditModal(product)">
-                        <i class="material-icons">edit</i>
-                      </button>
-                      <button class="action-btn view-btn" title="View Product" [routerLink]="['/shop/product', product._id]">
-                        <i class="material-icons">visibility</i>
-                      </button>
-                      <button class="action-btn delete-btn" title="Delete Product" (click)="confirmDeleteProduct(product)">
-                        <i class="material-icons">delete</i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Product Pagination -->
-            <div class="pagination" *ngIf="filteredProducts.length > itemsPerPage">
-              <button 
-                class="page-btn prev" 
-                [disabled]="currentPage === 1"
-                (click)="changePage(currentPage - 1)"
-              >
-                <i class="material-icons">chevron_left</i>
-                Previous
-              </button>
-              
-              <div class="page-numbers">
-                <button 
-                  *ngFor="let page of getPageNumbers()" 
-                  class="page-number" 
-                  [class.active]="page === currentPage"
-                  (click)="changePage(page)"
-                >
-                  {{ page }}
-                </button>
-              </div>
-              
-              <button 
-                class="page-btn next" 
-                [disabled]="currentPage * itemsPerPage >= filteredProducts.length"
-                (click)="changePage(currentPage + 1)"
-              >
-                Next
-                <i class="material-icons">chevron_right</i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Orders Tab (Simplified for now) -->
-          <div class="admin-tab" *ngIf="activeTab === 'orders'">
-            <div class="admin-tab-header">
-              <h1>Order Management</h1>
-              <button class="help-btn" (click)="showTabHelp('orders')">
-                <i class="material-icons">help_outline</i>
-                Help
-              </button>
-            </div>
-            
-            <div class="coming-soon">
-              <i class="material-icons">shopping_bag</i>
-              <h2>Order Management Coming Soon</h2>
-              <p>This feature is currently under development. Soon you'll be able to manage all customer orders here.</p>
-            </div>
-          </div>
-
-          <!-- Customers Tab (Simplified for now) -->
-          <div class="admin-tab" *ngIf="activeTab === 'customers'">
-            <div class="admin-tab-header">
-              <h1>Customer Management</h1>
-              <button class="help-btn" (click)="showTabHelp('customers')">
-                <i class="material-icons">help_outline</i>
-                Help
-              </button>
-            </div>
-            
-            <div class="coming-soon">
-              <i class="material-icons">people</i>
-              <h2>Customer Management Coming Soon</h2>
-              <p>This feature is currently under development. Soon you'll be able to manage all your customers here.</p>
-            </div>
-          </div>
-
-          <!-- Settings Tab (Simplified for now) -->
-          <div class="admin-tab" *ngIf="activeTab === 'settings'">
-            <div class="admin-tab-header">
-              <h1>Store Settings</h1>
-              <button class="help-btn" (click)="showTabHelp('settings')">
-                <i class="material-icons">help_outline</i>
-                Help
-              </button>
-            </div>
-            
-            <div class="coming-soon">
-              <i class="material-icons">settings</i>
-              <h2>Store Settings Coming Soon</h2>
-              <p>This feature is currently under development. Soon you'll be able to configure your store settings here.</p>
-            </div>
-          </div>
-        </main>
+    
+    <!-- Other content areas (orders, customers, settings) -->
+    <div class="content-area" *ngIf="activeTab === 'orders' || activeTab === 'customers' || activeTab === 'settings'">
+      <div class="feature-placeholder">
+        <i class="material-icons">
+          {{ activeTab === 'orders' ? 'shopping_bag' : 
+             activeTab === 'customers' ? 'people' : 'settings' }}
+        </i>
+        <h3>{{ activeTab === 'orders' ? 'Order Management' : 
+               activeTab === 'customers' ? 'Customer Management' : 'Store Settings' }}</h3>
+        <p>This feature is coming soon to enhance your magical shop.</p>
       </div>
     </div>
-  </div>
-
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Working magic...</p>
+    </div>
+  </main>
+  
   <!-- Product Edit Modal -->
   <app-product-edit-modal
     [product]="selectedProduct"
     [show]="showEditModal"
     [isNewProduct]="isNewProduct"
     (close)="closeEditModal()"
-    (save)="handleSaveProduct($event)"
-  ></app-product-edit-modal>
-
+    (save)="handleSaveProduct($event)">
+  </app-product-edit-modal>
+  
   <!-- Delete Confirmation Modal -->
   <div class="modal-overlay" *ngIf="showDeleteConfirmation">
     <div class="confirmation-modal">
       <div class="modal-header">
         <h3>Confirm Deletion</h3>
-        <button class="close-btn" (click)="cancelDeleteProduct()">
+        <button class="close-modal" (click)="cancelDeleteProduct()">
           <i class="material-icons">close</i>
         </button>
       </div>
+      
       <div class="modal-body">
         <div class="warning-icon">
           <i class="material-icons">warning</i>
         </div>
-        <p>Are you sure you want to delete the product:</p>
-        <p class="delete-item-name">{{ productToDelete?.name }}</p>
-        <p class="delete-warning">This action cannot be undone.</p>
+        
+        <p>Are you sure you want to delete:</p>
+        <p class="item-name">{{ productToDelete?.name }}</p>
+        <p class="warning-text">This action cannot be undone.</p>
       </div>
+      
       <div class="modal-footer">
-        <button class="cancel-btn" (click)="cancelDeleteProduct()">
-          <i class="material-icons">cancel</i>
-          Cancel
-        </button>
-        <button class="delete-btn" (click)="deleteProduct()">
-          <i class="material-icons">delete_forever</i>
-          Yes, Delete
-        </button>
+        <button class="secondary-btn" (click)="cancelDeleteProduct()">Cancel</button>
+        <button class="danger-btn" (click)="deleteProduct()">Delete</button>
       </div>
     </div>
   </div>
-
-  <!-- Help Modal -->
-  <div class="modal-overlay" *ngIf="showHelpModal">
-    <div class="help-modal">
-      <div class="modal-header">
-        <h3>{{ helpModalTitle }}</h3>
-        <button class="close-btn" (click)="closeHelpModal()">
-          <i class="material-icons">close</i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="help-content" [innerHTML]="helpModalContent"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="primary-btn" (click)="closeHelpModal()">
-          <i class="material-icons">check_circle</i>
-          Got it
-        </button>
-      </div>
-    </div>
-  </div>
-
 </div>

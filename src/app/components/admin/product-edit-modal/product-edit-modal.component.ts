@@ -1,5 +1,5 @@
 // src/app/components/admin/product-edit-modal/product-edit-modal.component.ts
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Product } from '../../../services/product.service';
@@ -11,9 +11,10 @@ import { Product } from '../../../services/product.service';
   templateUrl: './product-edit-modal.component.html',
   styleUrl: './product-edit-modal.component.scss'
 })
-export class ProductEditModalComponent implements OnInit {
+export class ProductEditModalComponent implements OnInit, OnChanges {
   @Input() product: Product | null = null;
   @Input() show: boolean = false;
+  @Input() isNewProduct: boolean = false;
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<{product: Product, imageFile: File | null}>();
   
@@ -22,6 +23,7 @@ export class ProductEditModalComponent implements OnInit {
   imageFile: File | null = null;
   loading: boolean = false;
   error: string = '';
+  modalTitle: string = 'Edit Product';
   
   // File upload constraints
   maxFileSize = 5 * 1024 * 1024; // 5 MB
@@ -32,6 +34,17 @@ export class ProductEditModalComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    this.updateForm();
+  }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['product'] || changes['isNewProduct']) {
+      this.updateForm();
+      this.updateModalTitle();
+    }
+  }
+  
+  updateForm(): void {
     if (this.product) {
       this.editForm.patchValue({
         name: this.product.name,
@@ -44,6 +57,10 @@ export class ProductEditModalComponent implements OnInit {
       
       this.imagePreview = this.product.image;
     }
+  }
+  
+  updateModalTitle(): void {
+    this.modalTitle = this.isNewProduct ? 'Add New Product' : 'Edit Product';
   }
   
   createForm(): FormGroup {
@@ -102,6 +119,12 @@ export class ProductEditModalComponent implements OnInit {
       return;
     }
     
+    // Check if image is required for new products
+    if (this.isNewProduct && !this.imagePreview && !this.imageFile) {
+      this.error = 'An image is required for new products.';
+      return;
+    }
+    
     this.loading = true;
     
     const updatedProduct = {
@@ -122,5 +145,19 @@ export class ProductEditModalComponent implements OnInit {
   
   onClose(): void {
     this.close.emit();
+  }
+  
+  resetForm(): void {
+    this.editForm.reset({
+      name: '',
+      description: '',
+      price: 0,
+      category: '',
+      isNew: false,
+      isBestseller: false
+    });
+    this.imagePreview = null;
+    this.imageFile = null;
+    this.error = '';
   }
 }

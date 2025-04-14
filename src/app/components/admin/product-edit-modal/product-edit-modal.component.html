@@ -2,7 +2,7 @@
 <div class="modal-overlay" *ngIf="show" (click)="onClose()">
     <div class="modal-container" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>Edit Product</h2>
+        <h2>{{ modalTitle }}</h2>
         <button class="close-btn" (click)="onClose()">
           <i class="material-icons">close</i>
         </button>
@@ -153,7 +153,7 @@
           [disabled]="editForm.invalid || loading"
         >
           <span class="spinner" *ngIf="loading"></span>
-          <span *ngIf="!loading">Save Changes</span>
+          <span *ngIf="!loading">{{ isNewProduct ? 'Create Product' : 'Save Changes' }}</span>
         </button>
       </div>
     </div>

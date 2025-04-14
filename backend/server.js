@@ -87,13 +87,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Configure storage for uploaded files
+// Configure storage for uploaded files with security enhancements
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, 'uploads/');
   },
   filename: function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+    // Generate a random file name with a timestamp to prevent name collisions
+    const fileExtension = file.originalname.split('.').pop();
+    const safeFileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
+    cb(null, safeFileName);
   }
 });
 
@@ -102,7 +105,26 @@ if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
 
-const upload = multer({ storage: storage });
+// Add file filters for security
+const fileFilter = (req, file, cb) => {
+  // Accept only specific image types
+  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid file type. Only JPEG, PNG, GIF and WEBP images are allowed.'), false);
+  }
+};
+
+// Configure multer with security settings
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -160,15 +182,50 @@ app.use((err, req, res, next) => {
 app.use('/api/products', productsRoutes);
 app.use('/api/payment', paymentRoutes);
 
-// File upload endpoint
-app.post('/api/products/upload', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
-  }
-  
-  // Return the URL to the uploaded file
-  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-  res.json({ imageUrl });
+// File upload endpoint with improved security and error handling
+app.post('/api/products/upload', (req, res) => {
+  // Use multer middleware dynamically to handle errors
+  upload.single('image')(req, res, (err) => {
+    // Handle multer errors
+    if (err) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ 
+          message: 'File too large. Maximum size is 5MB.' 
+        });
+      }
+      
+      // Handle other errors including invalid file types
+      logger.error(`File upload error: ${err.message}`);
+      return res.status(400).json({ 
+        message: err.message || 'Error uploading file. Please try again.' 
+      });
+    }
+    
+    // Check if a file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    
+    // Additional validation for image files
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    const fileExtension = req.file.originalname.split('.').pop().toLowerCase();
+    
+    if (!validExtensions.includes(fileExtension)) {
+      // Remove the invalid file
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ 
+        message: 'Invalid file extension. Only JPG, PNG, GIF and WEBP are allowed.' 
+      });
+    }
+    
+    // Return the URL to the uploaded file
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    
+    // Log successful upload
+    logger.info(`File uploaded successfully: ${req.file.filename}`);
+    
+    res.json({ imageUrl });
+  });
 });
 
 // Catch-all route for frontend in production

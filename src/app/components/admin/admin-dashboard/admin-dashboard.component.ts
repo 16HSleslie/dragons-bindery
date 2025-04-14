@@ -1,7 +1,7 @@
 // src/app/components/admin/admin-dashboard/admin-dashboard.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ProductService, Product } from '../../../services/product.service';
 import { ProductEditModalComponent } from '../product-edit-modal/product-edit-modal.component';
@@ -26,7 +26,8 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private productService: ProductService
+    private productService: ProductService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +51,8 @@ export class AdminDashboardComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
+    // Navigate to the home page after logout
+    this.router.navigate(['/']);
   }
 
   setActiveTab(tab: string): void {

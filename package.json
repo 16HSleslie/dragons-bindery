@@ -12,13 +12,16 @@
     "lint": "ng lint",
     "e2e": "cypress open",
     "e2e:run": "cypress run",
-    "test:api": "jest --config=backend/jest.config.js",
-    "test:api:coverage": "jest --config=backend/jest.config.js --coverage",
-    "test:api:watch": "jest --config=backend/jest.config.js --watch",
+    "test:api": "node backend/tests/run-tests.js",
+    "test:api:coverage": "node backend/tests/run-tests.js --coverage",
+    "test:api:watch": "node backend/tests/run-tests.js --watch",
+    "test:api:verbose": "node backend/tests/run-tests.js --verbose",
+    "test:api:single": "node backend/tests/run-tests.js",
     "test:all": "npm run test:coverage && npm run test:api:coverage && npm run e2e:run",
     "precommit": "npm run lint && npm run test:ci",
     "start:dev": "concurrently \"npm run start\" \"npm run start:server\"",
-    "start:server": "nodemon backend/server.js"
+    "start:server": "nodemon backend/server.js",
+    "start:prod": "NODE_ENV=production node backend/server.js"
   },
   "private": true,
   "dependencies": {

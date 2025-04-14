@@ -33,6 +33,9 @@ const ProductSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+}, {
+  // Suppress 'isNew' warning
+  suppressReservedKeysWarning: true
 });
 
 module.exports = mongoose.model('Product', ProductSchema);

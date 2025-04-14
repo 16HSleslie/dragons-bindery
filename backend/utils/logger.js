@@ -45,20 +45,23 @@ const logger = winston.createLogger({
     }),
     new transports.File({ 
       filename: path.join(logDir, 'combined.log') 
-    }),
-    // MongoDB logging for database operations (optional)
-    new transports.MongoDB({
-      level: 'info',
-      db: process.env.MONGODB_URI,
-      options: { useUnifiedTopology: true },
-      collection: 'logs',
-      format: format.combine(
-        format.timestamp(),
-        format.json()
-      )
     })
   ]
 });
+
+// Add MongoDB transport only if MONGODB_URI is available and we're not in test mode
+if (process.env.MONGODB_URI && process.env.NODE_ENV !== 'test') {
+  logger.add(new transports.MongoDB({
+    level: 'info',
+    db: process.env.MONGODB_URI,
+    options: { useUnifiedTopology: true },
+    collection: 'logs',
+    format: format.combine(
+      format.timestamp(),
+      format.json()
+    )
+  }));
+}
 
 // Stream for Morgan HTTP logger
 logger.stream = {

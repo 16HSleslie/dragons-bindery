@@ -37,7 +37,19 @@
         <a href="#" class="search-icon">
           <i class="material-icons">search</i>
         </a>
-        <!-- Replace this with just the cart dropdown component -->
+        
+        <!-- Admin Panel button when logged in -->
+        <div *ngIf="isAdmin" class="admin-controls">
+          <a [routerLink]="['/admin/dashboard']" class="admin-button">
+            <i class="material-icons">admin_panel_settings</i>
+            <span>Admin</span>
+          </a>
+          <button (click)="logout()" class="logout-button" title="Logout">
+            <i class="material-icons">logout</i>
+          </button>
+        </div>
+        
+        <!-- Cart dropdown component -->
         <app-cart-dropdown></app-cart-dropdown>
       </div>
     </div>

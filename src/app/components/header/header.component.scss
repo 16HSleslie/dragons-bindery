@@ -88,12 +88,73 @@
     gap: 1.5rem;
 }
 
-.search-icon, .cart-icon {
+.search-icon, .cart-icon, .admin-button {
     color: var(--secondary-brown);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.search-icon:hover, .cart-icon:hover, .admin-button:hover {
+    color: var(--primary-brown);
+    transform: scale(1.05);
+}
+
+.admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-button {
+    background-color: var(--primary-green);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid var(--accent-gold);
+}
+
+.admin-button i {
+    font-size: 1.1rem;
+}
+
+.admin-button span {
+    margin-left: 4px;
+}
+
+/* Add a subtle glow effect on hover */
+.admin-button:hover {
+    box-shadow: 0 0 8px rgba(151, 124, 82, 0.6);
+    color: white;
+    background-color: var(--secondary-green);
+}
+
+.logout-button {
+    background: none;
+    border: none;
+    color: var(--secondary-brown);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
     transition: all 0.3s ease;
 }
 
-.search-icon:hover, .cart-icon:hover {
+.logout-button i {
+    font-size: 1.2rem;
+}
+
+.logout-button:hover {
+    background-color: var(--beige);
     color: var(--primary-brown);
     transform: scale(1.1);
 }

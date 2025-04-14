@@ -10,11 +10,21 @@ export enum LogLevel {
   OFF = 4
 }
 
+export interface LogEntry {
+  timestamp: string;
+  level: LogLevel;
+  message: string;
+  source?: string;
+  data?: any[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class LoggerService {
   private level: LogLevel = environment.production ? LogLevel.WARN : LogLevel.DEBUG;
+  private logHistory: LogEntry[] = [];
+  private maxHistorySize = 100;
   
   setLevel(level: LogLevel): void {
     this.level = level;
@@ -36,33 +46,66 @@ export class LoggerService {
     this.log(LogLevel.ERROR, message, data);
   }
   
-  private log(level: LogLevel, message: string, data: any[]): void {
+  getLogHistory(): LogEntry[] {
+    return [...this.logHistory];
+  }
+  
+  clearHistory(): void {
+    this.logHistory = [];
+  }
+  
+  private log(level: LogLevel, message: string, data: any[], source?: string): void {
     if (level >= this.level) {
       const timestamp = new Date().toISOString();
-      const logPrefix = `[${timestamp}] [${LogLevel[level]}]`;
+      
+      // Store log in history
+      const logEntry: LogEntry = {
+        timestamp,
+        level,
+        message,
+        source,
+        data: data.length > 0 ? [...data] : undefined
+      };
+      
+      this.addToHistory(logEntry);
+      
+      // Format message for console
+      const logPrefix = `[${timestamp.split('T')[1].split('.')[0]}] [${LogLevel[level]}]`;
+      const component = source ? ` [${source}]` : '';
+      const formattedMessage = `${logPrefix}${component}: ${message}`;
       
       // Color coding for better visibility
       const styles = {
         [LogLevel.DEBUG]: 'color: #6c757d',
         [LogLevel.INFO]: 'color: #17a2b8',
-        [LogLevel.WARN]: 'color: #ffc107',
+        [LogLevel.WARN]: 'color: #ffc107; font-weight: bold',
         [LogLevel.ERROR]: 'color: #dc3545; font-weight: bold'
       };
       
+      // Add box for clearer separation
+      const boxStyle = 'background: #f8f9fa; border: 1px solid #ddd; border-radius: 3px; padding: 2px 4px;';
+      
       switch (level) {
         case LogLevel.DEBUG:
-          console.debug(`%c${logPrefix}: ${message}`, styles[level], ...data);
+          console.debug(`%c${formattedMessage}`, `${styles[level]}; ${boxStyle}`, ...data);
           break;
         case LogLevel.INFO:
-          console.info(`%c${logPrefix}: ${message}`, styles[level], ...data);
+          console.info(`%c${formattedMessage}`, `${styles[level]}; ${boxStyle}`, ...data);
           break;
         case LogLevel.WARN:
-          console.warn(`%c${logPrefix}: ${message}`, styles[level], ...data);
+          console.warn(`%c${formattedMessage}`, `${styles[level]}; ${boxStyle}`, ...data);
           break;
         case LogLevel.ERROR:
-          console.error(`%c${logPrefix}: ${message}`, styles[level], ...data);
+          console.error(`%c${formattedMessage}`, `${styles[level]}; ${boxStyle}`, ...data);
           break;
       }
+    }
+  }
+  
+  private addToHistory(entry: LogEntry): void {
+    this.logHistory.unshift(entry);
+    if (this.logHistory.length > this.maxHistorySize) {
+      this.logHistory.pop();
     }
   }
 }

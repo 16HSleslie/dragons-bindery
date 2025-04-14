@@ -1,17 +1,21 @@
 :root {
-  --primary-brown: #A67C52;   /* Warm brown */
-  --secondary-brown: #795C34; /* Darker brown */
-  --accent-green: #8B9D83;    /* Sage green */
-  --accent-green-dark: #5F6D58; /* Darker sage green */
-  --accent-pink: #E9C4C0;     /* Soft pink */
-  --accent-pink-dark: #C7A9A6; /* Darker soft pink */
-  --cream: #F7F3E9;           /* Light cream */
-  --beige: #E5DED2;           /* Beige */
-  --dark-text: #44352E;       /* Dark brown for text */
-  --light-text: #F7F3E9;      /* Light cream for text on dark backgrounds */
-  --primary-green: #6b8065;   /* Admin panel green */
-  --secondary-green: #526752; /* Darker admin panel green */
-  --accent-gold: #d6c069;     /* Gold accent color */
+  /* Updated color palette with more medieval/fantasy theme */
+  --primary-brown: #8D6E63;    /* Earthier brown */
+  --secondary-brown: #5D4037;  /* Deeper, richer brown */
+  --accent-green: #7D8C6E;     /* Forest green */
+  --accent-green-dark: #5F6D58; /* Deeper forest green */
+  --accent-pink: #D7BDA8;      /* Muted parchment pink */
+  --accent-pink-dark: #C9A88C; /* Aged parchment */
+  --cream: #F5F1E6;            /* Softer cream for parchment feel */
+  --beige: #E6DCC6;            /* Aged paper beige */
+  --dark-text: #3E2723;        /* Almost black-brown for text */
+  --light-text: #F5F1E6;       /* Light cream for text on dark backgrounds */
+  --gold: #D4AF37;             /* True medieval gold */
+  --gold-light: #F2D675;       /* Lighter gold for accents */
+  --primary-green: #5D6E52;    /* Admin panel green - more muted */
+  --secondary-green: #455042;  /* Darker admin panel green */
+  --accent-gold: #D4AF37;      /* Gold accent color */
+  --burgundy: #723D46;         /* Rich burgundy for accents */
 }
 
 @keyframes fadeIn {

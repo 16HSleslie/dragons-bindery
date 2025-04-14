@@ -1,31 +1,12 @@
+/* Header styles now using the medieval theme */
+
+/* Keep legacy classes for backward compatibility */
 .announcement-bar {
-    background-color: var(--accent-pink);
-    color: var(--dark-text);
-    text-align: center;
-    padding: 8px 0;
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    letter-spacing: 1px;
+    @extend .medieval-announcement;
 }
 
 .header {
-    position: relative;
-    background-color: rgba(247, 243, 233, 0.97);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    z-index: 100;
-    border-bottom: 1px solid var(--beige);
-}
-
-.header-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
+    @extend .medieval-header;
 }
 
 .logo-image {
@@ -35,22 +16,25 @@
 }
 
 .logo-text {
-    font-family: 'Cinzel', serif;
+    font-family: var(--font-heading);
 }
 
 .site-title {
-    font-size: 1.8rem;
-    color: var(--secondary-brown);
+    font-size: var(--font-size-xl);
+    color: var(--color-text-dark);
     margin-bottom: 5px;
     letter-spacing: 1px;
+    font-weight: 600;
 }
 
 .site-description {
+    font-family: var(--font-accent);
     font-style: italic;
-    font-size: 1rem;
-    color: var(--primary-brown);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-medium);
 }
 
+/* Main navigation using medieval styles */
 .main-nav ul {
     display: flex;
     list-style: none;
@@ -58,105 +42,171 @@
 }
 
 .main-nav ul li a {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
-    color: var(--secondary-brown);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-base);
+    color: var(--color-text-dark);
     letter-spacing: 1px;
     text-transform: uppercase;
     position: relative;
     padding: 5px 0;
-}
-
-.main-nav ul li a:after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: 0;
-    left: 0;
-    background-color: var(--primary-brown);
-    transition: width 0.3s ease;
-}
-
-.main-nav ul li a:hover:after {
-    width: 100%;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background-color: var(--color-primary-brown);
+        transition: width 0.3s ease;
+    }
+    
+    &:hover {
+        color: var(--color-primary-brown);
+        
+        &::after {
+            width: 100%;
+        }
+    }
+    
+    &.active {
+        color: var(--color-primary-brown);
+        font-weight: 600;
+        
+        &::after {
+            width: 100%;
+        }
+    }
 }
 
 .header-right {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: var(--spacing-md);
 }
 
-.search-icon, .cart-icon, .admin-button {
-    color: var(--secondary-brown);
+.search-icon {
+    color: var(--color-text-medium);
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    text-decoration: none;
-}
-
-.search-icon:hover, .cart-icon:hover, .admin-button:hover {
-    color: var(--primary-brown);
-    transform: scale(1.05);
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    
+    &:hover {
+        color: var(--color-primary-brown);
+        background-color: rgba(125, 86, 66, 0.1);
+    }
+    
+    i {
+        font-size: 1.2rem;
+    }
 }
 
 .admin-controls {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--spacing-xs);
+    
+    // Decorative medieval style for admin controls
+    &::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        bottom: -2px;
+        left: -8px;
+        width: 2px;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            var(--color-primary-gold),
+            transparent
+        );
+    }
 }
 
 .admin-button {
-    background-color: var(--primary-green);
-    color: white;
+    background-color: var(--color-primary-green);
+    color: var(--color-text-light);
     padding: 6px 12px;
-    border-radius: 4px;
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
     letter-spacing: 0.5px;
     display: flex;
     align-items: center;
     gap: 4px;
-    border: 1px solid var(--accent-gold);
-}
-
-.admin-button i {
-    font-size: 1.1rem;
-}
-
-.admin-button span {
-    margin-left: 4px;
-}
-
-/* Add a subtle glow effect on hover */
-.admin-button:hover {
-    box-shadow: 0 0 8px rgba(151, 124, 82, 0.6);
-    color: white;
-    background-color: var(--secondary-green);
+    border: 1px solid var(--color-primary-gold);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    
+    i {
+        font-size: 1.1rem;
+    }
+    
+    span {
+        margin-left: 2px;
+    }
+    
+    &:hover {
+        box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        color: var(--color-text-light);
+        background-color: darken(#4A5D47, 5%);
+        transform: translateY(-2px);
+    }
+    
+    &:active {
+        transform: translateY(0);
+    }
 }
 
 .logout-button {
     background: none;
     border: none;
-    color: var(--secondary-brown);
+    color: var(--color-text-medium);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px;
-    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
     transition: all 0.3s ease;
-}
-
-.logout-button i {
-    font-size: 1.2rem;
-}
-
-.logout-button:hover {
-    background-color: var(--beige);
-    color: var(--primary-brown);
-    transform: scale(1.1);
+    
+    i {
+        font-size: 1.2rem;
+    }
+    
+    &:hover {
+        background-color: rgba(125, 86, 66, 0.1);
+        color: var(--color-primary-brown);
+    }
+    
+    // Add a subtle tooltip on hover
+    &::after {
+        content: "Logout";
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--color-text-dark);
+        color: var(--color-text-light);
+        padding: 3px 8px;
+        border-radius: var(--radius-sm);
+        font-size: var(--font-size-xs);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+        pointer-events: none;
+    }
+    
+    &:hover::after {
+        opacity: 1;
+        visibility: visible;
+    }
 }
 
 .cart-wrapper {
@@ -165,16 +215,19 @@
 
 .cart-count {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: var(--accent-pink);
-    color: var(--dark-text);
+    top: -6px;
+    right: -6px;
+    background-color: var(--color-primary-gold);
+    color: var(--color-text-dark);
     width: 20px;
     height: 20px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.7rem;
-    font-family: 'Cinzel', serif;
+    font-size: var(--font-size-xs);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--color-ui-background);
 }

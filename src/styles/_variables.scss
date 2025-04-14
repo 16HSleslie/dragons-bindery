@@ -1,0 +1,174 @@
+// _variables.scss - Design Token System
+
+// Color Palette
+$colors: (
+  // Primary Brand Colors
+  'primary': (
+    'brown': #7D5642,        // Deeper leather brown
+    'green': #4A5D47,        // Forest green
+    'gold': #D4AF37,         // Royal gold 
+    'red': #8C3130,          // Medieval red
+    'blue': #2C4C6B,         // Royal blue
+  ),
+  // UI Colors
+  'ui': (
+    'background': #F5EFE0,   // Parchment
+    'background-dark': #E8E0CF, // Aged parchment
+    'accent': #B9A889,       // Antique gold/brass
+    'border': #D5C7A9,       // Subtle parchment border
+    'shadow': rgba(68, 53, 46, 0.15),
+  ),
+  // Text Colors
+  'text': (
+    'dark': #362D25,         // Dark oak
+    'medium': #5F5141,       // Medium brown
+    'light': #F5EFE0,        // Light parchment
+    'accent': #7D5642,       // Accent text color
+  ),
+  // State Colors
+  'state': (
+    'success': #4D6B47,      // Forest green
+    'error': #8C3130,        // Medieval red
+    'warning': #C29F53,      // Amber/gold
+    'info': #2C4C6B,         // Royal blue
+    'disabled': #BCB4A4,     // Muted parchment
+  )
+);
+
+// Typography
+$fonts: (
+  'heading': "'Cinzel', serif",
+  'body': "'Cormorant Garamond', serif",
+  'accent': "'EB Garamond', serif", 
+  'decorative': "'Cinzel Decorative', serif",
+);
+
+$font-sizes: (
+  'xs': 0.75rem,    // 12px
+  'sm': 0.875rem,   // 14px 
+  'base': 1rem,     // 16px
+  'md': 1.125rem,   // 18px
+  'lg': 1.25rem,    // 20px
+  'xl': 1.5rem,     // 24px
+  '2xl': 1.875rem,  // 30px
+  '3xl': 2.25rem,   // 36px
+  '4xl': 3rem,      // 48px
+  '5xl': 3.75rem,   // 60px
+);
+
+// Spacing System
+$spacing: (
+  'xs': 0.25rem,    // 4px
+  'sm': 0.5rem,     // 8px
+  'md': 1rem,       // 16px
+  'lg': 1.5rem,     // 24px
+  'xl': 2rem,       // 32px
+  '2xl': 3rem,      // 48px
+  '3xl': 4rem,      // 64px
+  '4xl': 6rem,      // 96px
+);
+
+// Border Radius
+$radius: (
+  'none': 0,
+  'sm': 0.125rem,   // 2px
+  'md': 0.25rem,    // 4px
+  'lg': 0.5rem,     // 8px
+  'xl': 1rem,       // 16px
+  'full': 9999px,
+);
+
+// Z-index levels
+$z-index: (
+  'below': -1,
+  'base': 0,
+  'above': 10,
+  'dropdown': 100,
+  'modal': 200,
+  'toast': 300,
+);
+
+// Breakpoints
+$breakpoints: (
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px, 
+  'xl': 1200px,
+  '2xl': 1400px,
+);
+
+// Animations
+$transitions: (
+  'fast': 150ms ease,
+  'medium': 300ms ease-in-out,
+  'slow': 500ms cubic-bezier(0.4, 0, 0.2, 1),
+);
+
+// Box Shadows
+$shadows: (
+  'sm': 0 1px 3px rgba(68, 53, 46, 0.12),
+  'md': 0 4px 8px rgba(68, 53, 46, 0.15), 
+  'lg': 0 10px 20px rgba(68, 53, 46, 0.2),
+  'inner': inset 0 2px 4px rgba(68, 53, 46, 0.1),
+  'focus': 0 0 0 3px rgba(125, 86, 66, 0.4),
+);
+
+// CSS Custom Properties Generation
+:root {
+  // Generate color variables
+  @each $group-name, $group in $colors {
+    @each $name, $value in $group {
+      --color-#{$group-name}-#{$name}: #{$value};
+    }
+  }
+  
+  // Generate font variables
+  @each $name, $value in $fonts {
+    --font-#{$name}: #{$value};
+  }
+  
+  // Generate font-size variables
+  @each $name, $value in $font-sizes {
+    --font-size-#{$name}: #{$value};
+  }
+  
+  // Generate spacing variables
+  @each $name, $value in $spacing {
+    --spacing-#{$name}: #{$value};
+  }
+  
+  // Generate border-radius variables
+  @each $name, $value in $radius {
+    --radius-#{$name}: #{$value};
+  }
+  
+  // Generate z-index variables
+  @each $name, $value in $z-index {
+    --z-#{$name}: #{$value};
+  }
+  
+  // Generate shadow variables
+  @each $name, $value in $shadows {
+    --shadow-#{$name}: #{$value};
+  }
+  
+  // Generate transition variables
+  @each $name, $value in $transitions {
+    --transition-#{$name}: #{$value};
+  }
+  
+  // Legacy variables (to maintain backward compatibility)
+  --primary-brown: var(--color-primary-brown);
+  --secondary-brown: var(--color-text-medium);
+  --accent-green: var(--color-primary-green);
+  --accent-green-dark: #5F6D58;
+  --accent-pink: #E9C4C0;
+  --accent-pink-dark: #C7A9A6;
+  --cream: var(--color-ui-background);
+  --beige: var(--color-ui-background-dark);
+  --dark-text: var(--color-text-dark);
+  --light-text: var(--color-text-light);
+  --primary-green: var(--color-primary-green);
+  --secondary-green: #526752;
+  --accent-gold: var(--color-primary-gold);
+}

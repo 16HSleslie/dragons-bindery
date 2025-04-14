@@ -21,7 +21,11 @@
     "precommit": "npm run lint && npm run test:ci",
     "start:dev": "concurrently \"npm run start\" \"npm run start:server\"",
     "start:server": "nodemon backend/server.js",
-    "start:prod": "NODE_ENV=production node backend/server.js"
+    "start:prod": "NODE_ENV=production node backend/server.js",
+    "test:watch": "npm run test -- --watch",
+    "test:affected": "node scripts/test-affected.js",
+    "test:auto": "concurrently \"npm run test:watch\" \"npm run test:api:watch\"",
+    "prepare": "husky install"
   },
   "private": true,
   "dependencies": {
@@ -66,12 +70,15 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "lint-staged": "^15.5.1",
     "supertest": "^7.1.0",
-    "typescript": "~5.7.2"
+    "typescript": "~5.7.2",
+    "chokidar": "^3.5.3",
+    "concurrently": "^8.2.2"
   },
   "lint-staged": {
     "*.{js,ts}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "node scripts/test-affected.js"
     ],
     "*.{html,scss,css}": [
       "prettier --write"

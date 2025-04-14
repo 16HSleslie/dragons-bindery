@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Dragons Bindery pre-push hook
+echo "Running pre-push checks..."
+
+# Check for test execution flag
+if [ "$SKIP_TESTS" = "true" ]; then
+  echo "⚠️  Skipping pre-push tests (SKIP_TESTS=true)"
+  exit 0
+fi
+
+# Run specific tests based on branch
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+
+if [[ "$BRANCH_NAME" == "main" ]] || [[ "$BRANCH_NAME" == "master" ]]; then
+  echo "🔍 Pushing to main branch - running full test suite..."
+  npm run test:all
+else
+  echo "🔍 Running tests for affected files..."
+  node scripts/test-affected.js
+fi

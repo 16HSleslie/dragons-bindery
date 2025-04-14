@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Dragons Bindery pre-commit hook
+echo "Running pre-commit checks..."
+
+# Run linting checks
+npx lint-staged
+
+# Check for test execution
+if [ "$SKIP_TESTS" = "true" ]; then
+  echo "⚠️  Skipping pre-commit tests (SKIP_TESTS=true)"
+else
+  # Run the affected tests script
+  node scripts/test-affected.js
+fi

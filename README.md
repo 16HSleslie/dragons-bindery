@@ -1,58 +1,121 @@
-# DragonsBindery
+# Dragon's Bindery
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.7.
+A fantasy-themed e-commerce platform for handcrafted books and journals.
 
-## Development server
+## Prerequisites
 
-To start a local development server, run:
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+- MongoDB (v6 or higher)
 
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/dragons-bindery.git
+   cd dragons-bindery
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file in the `backend` directory with the following content:
+   ```
+   MONGODB_URI=mongodb://localhost:27017/dragons-bindery
+   PORT=5000
+   NODE_ENV=development
+   ```
+
+## Running the Application
+
+### Start MongoDB
+Make sure MongoDB is running locally:
+```bash
+# Start MongoDB (command may vary based on your installation)
+mongod
+```
+
+### Start the Backend Server
+Option 1: Start just the backend server
+```bash
+# From the project root
+cd backend
+node server.js
+```
+
+Option 2: Using nodemon (recommended for development)
+```bash
+# From the project root
+npm run start:server
+```
+
+The backend server will start on http://localhost:5000
+
+### Start the Frontend Application
+Option 1: Start just the frontend application
+```bash
+# From the project root
+npm start
+```
+or
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+Option 2: Start both frontend and backend simultaneously (recommended)
 ```bash
-ng generate component component-name
+# From the project root
+npm run start:dev
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The frontend application will start on http://localhost:4200
 
+### Seed Data (Optional)
+To populate the database with initial product data:
 ```bash
-ng generate --help
+# From the project root
+node backend/seed-data.js
 ```
 
-## Building
+## Development
 
-To build the project run:
+### Running Tests
 
+Backend tests:
 ```bash
-ng build
+npm run test:api
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+Frontend tests:
 ```bash
-ng test
+npm test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+End-to-end tests:
 ```bash
-ng e2e
+npm run e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Run all tests:
+```bash
+npm run test:all
+```
+
+### Building for Production
+```bash
+npm run build
+```
+
+## Features
+
+- Product browsing and filtering
+- Shopping cart functionality
+- Secure checkout with Stripe
+- Admin dashboard for product management
+- User authentication
+- Responsive design
 
 ## Additional Resources
 

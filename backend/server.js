@@ -90,7 +90,7 @@ app.use((req, res, next) => {
 // Configure storage for uploaded files with security enhancements
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, path.join(__dirname, '../uploads/'));
   },
   filename: function(req, file, cb) {
     // Generate a random file name with a timestamp to prevent name collisions
@@ -101,8 +101,9 @@ const storage = multer.diskStorage({
 });
 
 // Create uploads directory if it doesn't exist
-if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads');
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 // Add file filters for security
@@ -127,7 +128,7 @@ const upload = multer({
 });
 
 // Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Add health check endpoint
 app.get('/health', (req, res) => {
@@ -211,15 +212,30 @@ app.post('/api/products/upload', (req, res) => {
     const fileExtension = req.file.originalname.split('.').pop().toLowerCase();
     
     if (!validExtensions.includes(fileExtension)) {
-      // Remove the invalid file
-      fs.unlinkSync(req.file.path);
+      // Remove the invalid file (with safety checks)
+      try {
+        if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+          // Validate that the path is really in our uploads directory
+          const normalizedPath = path.normalize(req.file.path);
+          const uploadsPath = path.normalize(uploadsDir);
+          
+          if (normalizedPath.startsWith(uploadsPath)) {
+            fs.unlinkSync(req.file.path);
+            logger.info(`Deleted invalid file: ${req.file.path}`);
+          } else {
+            logger.error(`Attempted to delete file outside uploads directory: ${req.file.path}`);
+          }
+        }
+      } catch (err) {
+        logger.error(`Error deleting invalid file: ${err.message}`);
+      }
       return res.status(400).json({ 
         message: 'Invalid file extension. Only JPG, PNG, GIF and WEBP are allowed.' 
       });
     }
     
-    // Return the URL to the uploaded file
-    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    // Return the URL to the uploaded file - use relative URL to avoid CORS/domain issues
+    const imageUrl = `/uploads/${req.file.filename}`;
     
     // Log successful upload
     logger.info(`File uploaded successfully: ${req.file.filename}`);

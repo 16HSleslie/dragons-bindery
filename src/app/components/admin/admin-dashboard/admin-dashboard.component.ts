@@ -288,10 +288,16 @@ export class AdminDashboardComponent implements OnInit {
     this.loading = true;
     this.error = '';
     
+    console.log('Handling product save:', { isNewProduct: this.isNewProduct, hasImageFile: !!data.imageFile });
+    
     // If we have a new image file, upload it first
     if (data.imageFile) {
+      console.log('Uploading image file:', data.imageFile.name, data.imageFile.size);
+      
       this.productService.uploadProductImage(data.imageFile).subscribe({
         next: (imageUrl) => {
+          console.log('Image uploaded successfully:', imageUrl);
+          
           // Update product with new image URL
           const updatedProduct = {
             ...data.product,
@@ -309,6 +315,7 @@ export class AdminDashboardComponent implements OnInit {
           console.error('Error uploading image:', error);
           this.loading = false;
           this.error = 'Failed to upload image. Please try again.';
+          alert('Image upload failed: ' + (error.message || 'Unknown error'));
         }
       });
     } else {
@@ -318,6 +325,7 @@ export class AdminDashboardComponent implements OnInit {
           // Require an image for new products
           this.loading = false;
           this.error = 'An image is required for new products.';
+          alert('Please upload an image for the new product.');
           return;
         }
         this.createNewProduct(data.product);
@@ -328,11 +336,21 @@ export class AdminDashboardComponent implements OnInit {
   }
   
   private createNewProduct(product: Omit<Product, '_id'>): void {
+    console.log('Creating new product:', product);
+    
     this.productService.createProduct(product).subscribe({
       next: (newProduct) => {
+        console.log('Product created successfully:', newProduct);
+        
         // Add the new product to the list
         this.products.unshift(newProduct);
         this.filteredProducts.unshift(newProduct);
+        this.productCount = this.products.length;
+        
+        // Update categories if needed
+        if (!this.productCategories.includes(newProduct.category)) {
+          this.productCategories.push(newProduct.category);
+        }
         
         this.closeEditModal();
         this.loading = false;
@@ -349,6 +367,7 @@ export class AdminDashboardComponent implements OnInit {
         console.error('Error creating product:', error);
         this.loading = false;
         this.error = 'Failed to create product. Please try again.';
+        alert('Failed to create product: ' + (error.message || error.error?.message || 'Unknown error'));
       }
     });
   }

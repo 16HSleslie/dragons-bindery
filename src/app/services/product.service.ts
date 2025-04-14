@@ -118,17 +118,26 @@ export class ProductService {
   }
 
   createProduct(product: Omit<Product, '_id'>): Observable<Product> {
+    console.log('ProductService: Creating product', product);
+    
     return this.http.post<Product>(this.apiUrl, product)
       .pipe(
+        tap(response => console.log('ProductService: Product created successfully', response)),
         catchError(error => {
-          console.log('API error, using mock response:', error);
-          // Create a mock response with an ID
-          const mockProduct: Product = {
-            ...product,
-            _id: 'new-' + Date.now(),
-            createdAt: new Date()
-          };
-          return of(mockProduct);
+          console.error('API error creating product:', error);
+          
+          // In development mode, create a mock response with an ID
+          if (!environment.production) {
+            console.log('Using mock response for development');
+            const mockProduct: Product = {
+              ...product,
+              _id: 'new-' + Date.now(),
+              createdAt: new Date()
+            };
+            return of(mockProduct);
+          }
+          
+          return throwError(() => error);
         })
       );
   }
@@ -166,18 +175,25 @@ updateProduct(id: string, product: Partial<Product>): Observable<Product> {
   }
 
   uploadProductImage(file: File): Observable<string> {
+    console.log('ProductService: Uploading image', file.name, file.size, file.type);
+    
     const formData = new FormData();
     formData.append('image', file);
     
     // Try to use the real API
-    return this.http.post<{imageUrl: string}>(`${this.apiUrl}/upload`, formData).pipe(
+    return this.http.post<{imageUrl: string}>(`${environment.apiUrl}/products/upload`, formData).pipe(
+      tap(response => console.log('ProductService: Image uploaded successfully', response)),
       map(response => response.imageUrl),
       catchError(error => {
-        console.error('API error, using mock image URL:', error);
+        console.error('API error uploading image:', error);
         
         // For development without a backend, return a mock URL
-        // In production, you would want to handle this differently
-        return of(`assets/images/placeholder.jpg?mock=${Date.now()}`);
+        if (!environment.production) {
+          console.log('Using mock image URL for development');
+          return of(`assets/images/placeholder.jpg?mock=${Date.now()}`);
+        }
+        
+        return throwError(() => error);
       })
     );
   }
